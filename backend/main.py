@@ -15,6 +15,7 @@ from routes import (
     mistakes_router,
     geo_features_router,
     ar_landforms_router,
+    auth_router,
 )
 
 # Create FastAPI application
@@ -36,6 +37,7 @@ app.add_middleware(
 )
 
 # Register routers
+app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(trivia_router)
 app.include_router(levels_router)

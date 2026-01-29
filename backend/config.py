@@ -15,6 +15,13 @@ class Settings(BaseSettings):
     app_name: str = "GeoExplorer API"
     debug: bool = True
     
+    # JWT Configuration
+    jwt_secret_key: str = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 15
+    refresh_token_expire_days: int = 7
+    verification_code_expire_minutes: int = 5
+    
     # CORS Configuration
     cors_origins: list[str] = [
         "http://localhost:5173",
