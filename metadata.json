@@ -1,0 +1,8 @@
+{
+  "name": "GeoExplorer",
+  "description": "A comprehensive geography learning application featuring interactive 3D globes, AR terrain exploration, gamified learning paths, and smart revision tools.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
