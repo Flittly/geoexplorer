@@ -3,11 +3,12 @@ GeoExplorer FastAPI Backend
 地理探索学习应用后端服务
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
-from services.supabase_client import init_supabase
+from db_service import init_db, close_db
 from routes import (
     users_router,
     trivia_router,
@@ -16,15 +17,33 @@ from routes import (
     geo_features_router,
     ar_landforms_router,
     auth_router,
+    questions_router,
 )
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用生命周期管理"""
+    # 启动时初始化数据库
+    print("🚀 Starting GeoExplorer API...")
+    await init_db()
+    print(f"✅ {settings.app_name} started successfully!")
+
+    yield
+
+    # 关闭时清理资源
+    print("👋 Shutting down...")
+    await close_db()
+
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.app_name,
     description="GeoExplorer 地理探索学习应用 API",
-    version="1.0.0",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # Configure CORS
@@ -44,27 +63,27 @@ app.include_router(levels_router)
 app.include_router(mistakes_router)
 app.include_router(geo_features_router)
 app.include_router(ar_landforms_router)
+app.include_router(questions_router)
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize services on application startup."""
-    init_supabase()
-    print(f"🚀 {settings.app_name} started successfully!")
 
 @app.get("/")
 async def root():
     """Root endpoint - API health check."""
     return {
         "message": "Welcome to GeoExplorer API",
+        "version": "2.0.0",
         "status": "running",
-        "docs": "/docs"
+        "docs": "/docs",
     }
+
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
