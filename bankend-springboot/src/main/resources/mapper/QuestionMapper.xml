@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.QuestionMapper">
+
+    <resultMap id="QuestionResult" type="com.flittly.bankendspringboot.entity.Question">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="levelId" column="level_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="question" column="question"/>
+        <result property="correctAnswer" column="correct_answer"/>
+        <result property="explanation" column="explanation"/>
+        <result property="orderIndex" column="order_index"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="QuestionWithJsonResult" type="com.flittly.bankendspringboot.entity.Question" extends="QuestionResult">
+        <result property="options" column="options" typeHandler="com.flittly.bankendspringboot.config.JsonListTypeHandler"/>
+    </resultMap>
+
+    <select id="findByLevelId" resultMap="QuestionWithJsonResult">
+        SELECT * FROM questions WHERE level_id = #{levelId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND is_active = true ORDER BY order_index ASC
+    </select>
+
+    <select id="findById" resultMap="QuestionWithJsonResult">
+        SELECT * FROM questions WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO questions (id, level_id, question, options, correct_answer, explanation, order_index, is_active, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{levelId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{question}, #{options, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler}, #{correctAnswer}, #{explanation}, #{orderIndex}, #{isActive}, #{createdAt})
+    </insert>
+
+</mapper>
