@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class UploadController {
     private String uploadDir;
 
     @PostMapping("/avatar")
-    public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(MessageResponse.error(ErrorCode.BAD_REQUEST));
         }
@@ -54,7 +55,8 @@ public class UploadController {
             File dest = new File(dirFile, filename);
             file.transferTo(dest);
 
-            String url = "/uploads/avatars/" + filename;
+            String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+            String url = baseUrl + "/uploads/avatars/" + filename;
 
             return ResponseEntity.ok(Map.of(
                     "url", url,
