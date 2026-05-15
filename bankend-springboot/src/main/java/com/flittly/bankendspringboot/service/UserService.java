@@ -54,9 +54,9 @@ public class UserService {
 
         if (request.getName() != null) user.setName(request.getName());
         if (request.getAvatarUrl() != null) user.setAvatarUrl(request.getAvatarUrl());
-        if (request.getLevel() != null) user.setLevel(UserLevel.valueOf(request.getLevel()));
+        if (request.getLevel() != null) user.setLevel(UserLevel.valueOf(request.getLevel().toUpperCase()));
         if (request.getTotalStars() != null) user.setTotalStars(request.getTotalStars());
-        if (request.getGender() != null) user.setGender(GenderType.valueOf(request.getGender()));
+        if (request.getGender() != null) user.setGender(GenderType.valueOf(request.getGender().toUpperCase()));
         if (request.getAge() != null) user.setAge(request.getAge());
         user.setUpdatedAt(LocalDateTime.now());
 

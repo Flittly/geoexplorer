@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { UserAuth, clearAuthData } from '../api';
 
@@ -9,15 +9,16 @@ const Profile: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
-  // 编辑表单状态
+  const [isEditing, setIsEditing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [name, setName] = useState('');
   const [gender, setGender] = useState<string>('');
   const [age, setAge] = useState<string>('');
+  const ageInputRef = useRef<HTMLInputElement>(null);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  // 检查登录状态并获取用户信息
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -34,7 +35,6 @@ const Profile: React.FC = () => {
         setAge(userData.age?.toString() || '');
         setAvatarUrl(userData.avatar_url || '');
       } catch {
-        // Token 可能已过期，清除并跳转到登录页
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         navigate('/login');
@@ -58,28 +58,23 @@ const Profile: React.FC = () => {
         name,
         avatar_url: avatarUrl,
       };
-      
-      // 如果后端支持这些字段
+
       if (gender) updateData.gender = gender;
-      if (age) updateData.age = parseInt(age, 10);
+      if (ageInputRef.current?.value) updateData.age = parseInt(ageInputRef.current.value, 10);
 
       await api.user.updateUser(user.id, updateData);
       setSuccess('个人信息更新成功！');
-      
-      // 更新本地用户数据
-      const updatedUser = { 
-        ...user, 
-        name, 
+
+      const updatedUser = {
+        ...user,
+        name,
         avatar_url: avatarUrl,
         gender: gender || user.gender,
         age: age ? parseInt(age, 10) : user.age,
       };
       setUser(updatedUser);
-      
-      // 更新 localStorage 中的用户信息
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
-      // 3秒后清除成功消息
+      setIsEditing(false);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : '更新失败，请重试');
@@ -88,9 +83,54 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (user) {
+      setName(user.name || '');
+      setGender(user.gender || '');
+      setAge(user.age?.toString() || '');
+      setAvatarUrl(user.avatar_url || '');
+    }
+    setIsEditing(false);
+    setError('');
+  };
+
+  const handleAvatarClick = () => {
+    if (isEditing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'}/api/upload/avatar`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('上传失败');
+      }
+
+      const data = await response.json();
+      setAvatarUrl(data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '头像上传失败');
+    }
+  };
+
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refresh_token');
-    
+
     try {
       if (refreshToken) {
         await api.auth.logout(refreshToken);
@@ -98,9 +138,7 @@ const Profile: React.FC = () => {
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      // 清除本地存储
       clearAuthData();
-      // 跳转到登录页
       navigate('/login');
     }
   };
@@ -118,6 +156,14 @@ const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark pb-24">
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-800/50">
         <button
@@ -127,22 +173,39 @@ const Profile: React.FC = () => {
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <h1 className="text-lg font-bold text-slate-900 dark:text-white">个人资料</h1>
-        <div className="w-10"></div>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="flex items-center justify-center size-10 rounded-full bg-white dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+        >
+          <span className="material-symbols-outlined">{isEditing ? 'close' : 'edit'}</span>
+        </button>
       </header>
 
       <main className="p-4 space-y-6">
         {/* 头像区域 */}
         <div className="text-center py-6">
-          <div className="relative inline-block">
+          <div
+            className={`relative inline-block ${isEditing ? 'cursor-pointer' : ''}`}
+            onClick={handleAvatarClick}
+          >
             <div
               className="w-24 h-24 rounded-full bg-cover bg-center border-4 border-white dark:border-surface-dark shadow-lg mx-auto"
               style={{ backgroundImage: `url("${avatarUrl || 'https://via.placeholder.com/96'}")` }}
             ></div>
-            <button className="absolute bottom-0 right-0 size-8 rounded-full bg-primary text-white flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
-              <span className="material-symbols-outlined text-sm">camera_alt</span>
-            </button>
+            {isEditing && (
+              <>
+                <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                  <span className="material-symbols-outlined text-white text-2xl">camera_alt</span>
+                </div>
+                <div className="absolute bottom-0 right-0 size-8 rounded-full bg-primary text-white flex items-center justify-center shadow-md">
+                  <span className="material-symbols-outlined text-sm">camera_alt</span>
+                </div>
+              </>
+            )}
           </div>
-          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">点击更换头像</p>
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+            {isEditing ? '点击更换头像' : user?.name || '用户'}
+          </p>
         </div>
 
         {/* 消息提示 */}
@@ -157,100 +220,99 @@ const Profile: React.FC = () => {
           </div>
         )}
 
-        {/* 基本信息表单 */}
+        {/* 基本信息 */}
         <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700/50 space-y-4">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">基本信息</h2>
-          
+
+          {/* 昵称 */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              昵称
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="请输入昵称"
-              maxLength={100}
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">昵称</label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="请输入昵称"
+                maxLength={100}
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            ) : (
+              <p className="px-4 py-3 text-slate-900 dark:text-white">{user?.name || '未设置'}</p>
+            )}
           </div>
 
+          {/* 性别 */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              性别
-            </label>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setGender('male')}
-                className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
-                  gender === 'male'
-                    ? 'bg-primary/10 border-primary text-primary'
-                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                <span className="material-symbols-outlined inline-block mr-1">male</span>
-                男
-              </button>
-              <button
-                type="button"
-                onClick={() => setGender('female')}
-                className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
-                  gender === 'female'
-                    ? 'bg-pink-50 border-pink-300 text-pink-600'
-                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                <span className="material-symbols-outlined inline-block mr-1">female</span>
-                女
-              </button>
-              <button
-                type="button"
-                onClick={() => setGender('other')}
-                className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
-                  gender === 'other'
-                    ? 'bg-purple-50 border-purple-300 text-purple-600'
-                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                保密
-              </button>
-            </div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">性别</label>
+            {isEditing ? (
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setGender('male')}
+                  className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
+                    gender === 'male'
+                      ? 'bg-primary/10 border-primary text-primary'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  <span className="material-symbols-outlined inline-block mr-1">male</span>
+                  男
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGender('female')}
+                  className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
+                    gender === 'female'
+                      ? 'bg-pink-50 border-pink-300 text-pink-600'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  <span className="material-symbols-outlined inline-block mr-1">female</span>
+                  女
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGender('other')}
+                  className={`flex-1 py-3 rounded-xl border text-sm font-medium transition-colors ${
+                    gender === 'other'
+                      ? 'bg-purple-50 border-purple-300 text-purple-600'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  保密
+                </button>
+              </div>
+            ) : (
+              <p className="px-4 py-3 text-slate-900 dark:text-white">
+                {user?.gender === 'male' ? '男' : user?.gender === 'female' ? '女' : '未设置'}
+              </p>
+            )}
           </div>
 
+          {/* 年龄 */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              年龄
-            </label>
-            <input
-              type="number"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              placeholder="请输入年龄"
-              min={1}
-              max={120}
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              头像链接
-            </label>
-            <input
-              type="text"
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder="请输入头像图片链接"
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">年龄</label>
+            {isEditing ? (
+              <input
+                ref={ageInputRef}
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="请输入年龄"
+                min={1}
+                max={120}
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            ) : (
+              <p className="px-4 py-3 text-slate-900 dark:text-white">{user?.age || '未设置'}</p>
+            )}
           </div>
         </div>
 
         {/* 学习统计 */}
         <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700/50">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">学习统计</h2>
-          
+
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center">
               <p className="text-2xl font-bold text-blue-600">12</p>
@@ -282,23 +344,23 @@ const Profile: React.FC = () => {
         {/* 快捷入口 */}
         <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700/50">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">快捷入口</h2>
-          
+
           <div className="grid grid-cols-3 gap-3">
-            <button 
+            <button
               onClick={() => navigate('/mistakes')}
               className="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <span className="material-symbols-outlined text-red-500">error</span>
               <span className="text-xs">错题集</span>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/leaderboard')}
               className="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <span className="material-symbols-outlined text-yellow-500">leaderboard</span>
               <span className="text-xs">排行榜</span>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/daily-challenge')}
               className="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
@@ -311,36 +373,46 @@ const Profile: React.FC = () => {
         {/* 账号信息 */}
         <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700/50 space-y-4">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">账号信息</h2>
-          
+
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-600 dark:text-slate-400">邮箱</span>
             <span className="text-slate-900 dark:text-white">{user?.email || '未绑定'}</span>
           </div>
-          
+
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-600 dark:text-slate-400">手机</span>
             <span className="text-slate-900 dark:text-white">{user?.phone || '未绑定'}</span>
           </div>
-          
+
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-600 dark:text-slate-400">学习等级</span>
             <span className="text-slate-900 dark:text-white">{user?.level || '初学者'}</span>
           </div>
-          
+
           <div className="flex items-center justify-between py-2">
             <span className="text-slate-600 dark:text-slate-400">获得星星</span>
             <span className="text-amber-500 font-bold">★ {user?.total_stars || 0}</span>
           </div>
         </div>
 
-        {/* 保存按钮 */}
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full py-3.5 rounded-xl bg-primary text-white font-bold text-base shadow-md shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-        >
-          {saving ? '保存中...' : '保存修改'}
-        </button>
+        {/* 编辑模式下的保存/取消按钮 */}
+        {isEditing && (
+          <div className="flex gap-3">
+            <button
+              onClick={handleCancel}
+              className="flex-1 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-base hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all"
+            >
+              取消
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 py-3.5 rounded-xl bg-primary text-white font-bold text-base shadow-md shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+            >
+              {saving ? '保存中...' : '保存修改'}
+            </button>
+          </div>
+        )}
 
         {/* 退出登录 */}
         <button

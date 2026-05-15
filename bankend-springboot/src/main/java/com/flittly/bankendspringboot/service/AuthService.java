@@ -127,7 +127,7 @@ public class AuthService {
                 .totalStars(user.getTotalStars())
                 .isVerified(user.getIsVerified())
                 .createdAt(user.getCreatedAt())
-                .gender(user.getGender() != null ? user.getGender().name() : null)
+                .gender(user.getGender() != null ? user.getGender().name().toLowerCase() : null)
                 .age(user.getAge())
                 .build();
     }

@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login/password").permitAll()
                         .requestMatchers("/api/auth/login/code").permitAll()
                         .requestMatchers("/api/auth/refresh").permitAll()
+                        .requestMatchers("/api/upload/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/trivia/today").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/trivia/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/levels/**").permitAll()
