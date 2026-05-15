@@ -1,6 +1,7 @@
 package com.flittly.bankendspringboot.service;
 
 import com.flittly.bankendspringboot.config.BusinessException;
+import com.flittly.bankendspringboot.config.ErrorCode;
 import com.flittly.bankendspringboot.config.JwtUtil;
 import com.flittly.bankendspringboot.dto.*;
 import com.flittly.bankendspringboot.entity.RefreshToken;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,10 +35,8 @@ public class AuthService {
         String target = request.getTarget();
         String type = request.getType();
 
-        // Mark old codes as used
         verificationCodeMapper.markAsUsed(target, type);
 
-        // Generate new code (hardcoded "123456" for demo, same as original)
         String code = "123456";
 
         VerificationCode verificationCode = new VerificationCode();
@@ -52,26 +50,22 @@ public class AuthService {
 
         verificationCodeMapper.insert(verificationCode);
 
-        // In production, send code via SMS/email
         System.out.println("Verification code for " + target + ": " + code);
 
-        return new MessageResponse("Verification code sent successfully", true);
+        return MessageResponse.success("验证码发送成功");
     }
 
     @Transactional
     public TokenResponse register(RegisterRequest request) {
-        // Validate verification code
         if (!"123456".equals(request.getCode())) {
-            throw new BusinessException("验证码错误", HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ErrorCode.INVALID_VERIFICATION_CODE);
         }
 
-        // Check if user already exists
         User existingUser = userMapper.findByEmailOrPhone(request.getEmail(), request.getPhone());
         if (existingUser != null) {
-            throw new BusinessException("该邮箱或手机号已注册", HttpStatus.CONFLICT);
+            throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
-        // Create new user
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName(request.getName());
@@ -94,11 +88,11 @@ public class AuthService {
     public TokenResponse loginWithPassword(LoginPasswordRequest request) {
         User user = userMapper.findByEmailOrPhone(request.getEmail(), request.getPhone());
         if (user == null) {
-            throw new BusinessException("用户不存在", HttpStatus.NOT_FOUND);
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new BusinessException("密码错误", HttpStatus.UNAUTHORIZED);
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD, HttpStatus.UNAUTHORIZED);
         }
 
         return generateTokenResponse(user);
@@ -106,12 +100,12 @@ public class AuthService {
 
     public TokenResponse loginWithCode(LoginCodeRequest request) {
         if (!"123456".equals(request.getCode())) {
-            throw new BusinessException("验证码错误", HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ErrorCode.INVALID_VERIFICATION_CODE);
         }
 
         User user = userMapper.findByEmailOrPhone(request.getEmail(), request.getPhone());
         if (user == null) {
-            throw new BusinessException("用户不存在", HttpStatus.NOT_FOUND);
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
         return generateTokenResponse(user);
@@ -120,7 +114,7 @@ public class AuthService {
     public UserResponse getCurrentUser(String userId) {
         User user = userMapper.findById(UUID.fromString(userId));
         if (user == null) {
-            throw new BusinessException("用户不存在", HttpStatus.NOT_FOUND);
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
         return UserResponse.builder()
@@ -142,18 +136,16 @@ public class AuthService {
     public TokenResponse refreshToken(RefreshRequest request) {
         String refreshTokenStr = request.getRefreshToken();
 
-        // Validate refresh token JWT
         if (!jwtUtil.validateToken(refreshTokenStr) || !"refresh".equals(jwtUtil.getTokenType(refreshTokenStr))) {
-            throw new BusinessException("Refresh Token 无效", HttpStatus.UNAUTHORIZED);
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
         }
 
         String userId = jwtUtil.extractUserId(refreshTokenStr);
         User user = userMapper.findById(UUID.fromString(userId));
         if (user == null) {
-            throw new BusinessException("用户不存在", HttpStatus.NOT_FOUND);
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        // Revoke old refresh token
         refreshTokenMapper.revokeToken(refreshTokenStr);
 
         return generateTokenResponse(user);
@@ -162,14 +154,13 @@ public class AuthService {
     @Transactional
     public MessageResponse logout(RefreshRequest request) {
         refreshTokenMapper.revokeToken(request.getRefreshToken());
-        return new MessageResponse("Logged out successfully", true);
+        return MessageResponse.success("登出成功");
     }
 
     private TokenResponse generateTokenResponse(User user) {
         String accessToken = jwtUtil.generateAccessToken(user.getId());
         String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
-        // Store refresh token in DB
         RefreshToken tokenEntity = new RefreshToken();
         tokenEntity.setId(UUID.randomUUID());
         tokenEntity.setUserId(user.getId());

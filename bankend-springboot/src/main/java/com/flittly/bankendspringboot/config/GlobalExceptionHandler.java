@@ -13,13 +13,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageResponse> handleBusinessException(BusinessException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(new MessageResponse(e.getMessage(), false));
+                .body(MessageResponse.error(e.getErrorCode()));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<MessageResponse> handleRuntimeException(RuntimeException e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new MessageResponse(e.getMessage(), false));
+                .body(MessageResponse.error(ErrorCode.INTERNAL_ERROR.getCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<MessageResponse> handleException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(MessageResponse.error(ErrorCode.INTERNAL_ERROR));
     }
 }
