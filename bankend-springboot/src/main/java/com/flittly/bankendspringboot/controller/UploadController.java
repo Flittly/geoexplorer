@@ -22,6 +22,15 @@ public class UploadController {
 
     @PostMapping("/avatar")
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        return uploadImage(file, request, "avatars");
+    }
+
+    @PostMapping("/image")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        return uploadImage(file, request, "images");
+    }
+
+    private ResponseEntity<?> uploadImage(MultipartFile file, HttpServletRequest request, String subDir) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(MessageResponse.error(ErrorCode.BAD_REQUEST));
         }
@@ -46,7 +55,7 @@ public class UploadController {
 
             String filename = UUID.randomUUID().toString() + extension;
 
-            String dir = System.getProperty("user.dir") + File.separator + uploadDir + File.separator + "avatars";
+            String dir = System.getProperty("user.dir") + File.separator + uploadDir + File.separator + subDir;
             File dirFile = new File(dir);
             if (!dirFile.exists()) {
                 dirFile.mkdirs();
@@ -56,7 +65,7 @@ public class UploadController {
             file.transferTo(dest);
 
             String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-            String url = baseUrl + "/uploads/avatars/" + filename;
+            String url = baseUrl + "/uploads/" + subDir + "/" + filename;
 
             return ResponseEntity.ok(Map.of(
                     "url", url,

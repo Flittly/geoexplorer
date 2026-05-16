@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.PostMapper">
+
+    <resultMap id="PostResult" type="com.flittly.bankendspringboot.entity.Post">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="postType" column="post_type" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="images" column="images" typeHandler="com.flittly.bankendspringboot.config.JsonListTypeHandler"/>
+        <result property="status" column="status" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="favoriteCount" column="favorite_count"/>
+        <result property="isTop" column="is_top"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByFilters" resultMap="PostResult">
+        SELECT * FROM posts
+        <where>
+            <if test="postType != null and postType != ''">
+                post_type = #{postType, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+            </if>
+        </where>
+        ORDER BY is_top DESC, created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultMap="PostResult">
+        SELECT * FROM posts WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO posts (id, user_id, post_type, title, content, images, status, like_count, comment_count, favorite_count, is_top, created_at, updated_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{postType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{title}, #{content},
+                #{images, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler},
+                #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{likeCount}, #{commentCount}, #{favoriteCount}, #{isTop}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update">
+        UPDATE posts
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="images != null">images = #{images, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler},</if>
+            <if test="status != null">status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="isTop != null">is_top = #{isTop},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM posts WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </delete>
+
+    <update id="incrementLikeCount">
+        UPDATE posts SET like_count = like_count + 1, updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="decrementLikeCount">
+        UPDATE posts SET like_count = GREATEST(like_count - 1, 0), updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="incrementCommentCount">
+        UPDATE posts SET comment_count = comment_count + 1, updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="decrementCommentCount">
+        UPDATE posts SET comment_count = GREATEST(comment_count - 1, 0), updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="incrementFavoriteCount">
+        UPDATE posts SET favorite_count = favorite_count + 1, updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="decrementFavoriteCount">
+        UPDATE posts SET favorite_count = GREATEST(favorite_count - 1, 0), updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+</mapper>

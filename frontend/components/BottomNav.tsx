@@ -10,7 +10,7 @@ const BottomNav: React.FC = () => {
   const handleProfileClick = () => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      navigate('/profile');
+      navigate('/mine');
     } else {
       navigate('/login');
     }
@@ -35,17 +35,20 @@ const BottomNav: React.FC = () => {
           <span className={`text-[10px] ${isActive('/levels') ? 'font-bold' : 'font-medium'}`}>课程</span>
         </button>
 
-        <button className="flex flex-col items-center justify-center gap-1 w-16 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors">
-          <span className="material-symbols-outlined text-[26px]">groups</span>
-          <span className="text-[10px] font-medium">社区</span>
+        <button
+          onClick={() => navigate('/community')}
+          className={`flex flex-col items-center justify-center gap-1 w-16 transition-colors ${isActive('/community') ? 'text-primary' : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
+        >
+          <span className={`material-symbols-outlined text-[26px] ${isActive('/community') ? 'icon-filled' : ''}`}>groups</span>
+          <span className={`text-[10px] ${isActive('/community') ? 'font-bold' : 'font-medium'}`}>社区</span>
         </button>
 
         <button
           onClick={handleProfileClick}
-          className={`flex flex-col items-center justify-center gap-1 w-16 transition-colors ${isActive('/profile') ? 'text-primary' : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
+          className={`flex flex-col items-center justify-center gap-1 w-16 transition-colors ${isActive('/mine') ? 'text-primary' : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
         >
-          <span className={`material-symbols-outlined text-[26px] ${isActive('/profile') ? 'icon-filled' : ''}`}>person</span>
-          <span className={`text-[10px] ${isActive('/profile') ? 'font-bold' : 'font-medium'}`}>我的</span>
+          <span className={`material-symbols-outlined text-[26px] ${isActive('/mine') ? 'icon-filled' : ''}`}>person</span>
+          <span className={`text-[10px] ${isActive('/mine') ? 'font-bold' : 'font-medium'}`}>我的</span>
         </button>
       </div>
       <div className="h-4 w-full"></div>

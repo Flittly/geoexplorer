@@ -13,6 +13,12 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import DailyChallenge from './pages/DailyChallenge';
+import TriviaDetail from './pages/TriviaDetail';
+import Mine from './pages/Mine';
+import MyCourses from './pages/MyCourses';
+import Community from './pages/Community';
+import PostDetail from './pages/PostDetail';
+import CreatePost from './pages/CreatePost';
 import BottomNav from './components/BottomNav';
 
 // Lazy load admin components
@@ -29,11 +35,13 @@ const NotificationManagement = lazy(() => import('../admin/src/pages/Notificatio
 const Layout = ({ children }: { children?: React.ReactNode }) => {
   const location = useLocation();
   // Don't show standard nav on immersive pages like Globe or AR, and auth pages, and admin pages
-  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge'].includes(location.pathname) || 
+  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/community', '/community/create'].includes(location.pathname) || 
                   location.pathname.startsWith('/admin') ||
                   location.pathname.startsWith('/level/') ||
                   location.pathname.startsWith('/quiz/') ||
-                  location.pathname.startsWith('/mistake/');
+                  location.pathname.startsWith('/mistake/') ||
+                  location.pathname.startsWith('/trivia/') ||
+                  location.pathname.startsWith('/community/');
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -48,7 +56,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
 // Admin layout without bottom nav
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载�?..</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载�?..</div>}>
       <AdminProvider>{children}</AdminProvider>
     </Suspense>
   );
@@ -72,6 +80,12 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/daily-challenge" element={<DailyChallenge />} />
+          <Route path="/trivia/:id" element={<TriviaDetail />} />
+          <Route path="/mine" element={<Mine />} />
+          <Route path="/my-courses" element={<MyCourses />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/create" element={<CreatePost />} />
+          <Route path="/community/:id" element={<PostDetail />} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLayout><AdminLogin /></AdminLayout>} />

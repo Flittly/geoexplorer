@@ -428,6 +428,98 @@ export const questionsAPI = {
         fetchAPI<QuizResult[]>(`/api/questions/user/${userId}/results`),
 };
 
+// ============ Community API ============
+
+export interface PostItem {
+    id: string;
+    user_id: string;
+    user_name: string;
+    user_avatar: string;
+    user_level: string;
+    post_type: 'share' | 'checkin' | 'question';
+    title: string;
+    content: string;
+    images?: string[];
+    status: string;
+    like_count: number;
+    comment_count: number;
+    favorite_count: number;
+    is_top: boolean;
+    is_liked: boolean;
+    is_favorited: boolean;
+    is_accepted?: boolean;
+    created_at: string;
+}
+
+export interface CommentItem {
+    id: string;
+    post_id: string;
+    user_id: string;
+    user_name: string;
+    user_avatar: string;
+    parent_id?: string;
+    content: string;
+    images?: string[];
+    is_accepted: boolean;
+    like_count: number;
+    is_liked: boolean;
+    created_at: string;
+}
+
+export interface PostCreateData {
+    post_type: string;
+    title: string;
+    content: string;
+    images?: string[];
+}
+
+export const communityAPI = {
+    getPosts: (type?: string, page = 1, size = 10) => {
+        const params = new URLSearchParams({ page: String(page), size: String(size) });
+        if (type) params.set('type', type);
+        return fetchAPI<PostItem[]>(`/api/posts?${params}`);
+    },
+
+    getPost: (id: string) =>
+        fetchAPI<PostItem>(`/api/posts/${id}`),
+
+    createPost: (data: PostCreateData) =>
+        fetchAPI<PostItem>('/api/posts', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
+    deletePost: (id: string) =>
+        fetchAPI<{ message: string }>(`/api/posts/${id}`, { method: 'DELETE' }),
+
+    getComments: (postId: string, page = 1, size = 20) =>
+        fetchAPI<CommentItem[]>(`/api/posts/${postId}/comments?page=${page}&size=${size}`),
+
+    createComment: (postId: string, data: { content: string; parent_id?: string; images?: string[] }) =>
+        fetchAPI<CommentItem>(`/api/posts/${postId}/comments`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
+    acceptComment: (commentId: string) =>
+        fetchAPI<{ message: string }>(`/api/comments/${commentId}/accept`, { method: 'POST' }),
+
+    toggleLike: (targetId: string, targetType: string) =>
+        fetchAPI<{ liked: boolean }>('/api/likes', {
+            method: 'POST',
+            body: JSON.stringify({ target_id: targetId, target_type: targetType }),
+        }),
+
+    toggleFavorite: (postId: string) =>
+        fetchAPI<{ favorited: boolean }>('/api/favorites', {
+            method: 'POST',
+            body: JSON.stringify({ postId }),
+        }),
+
+    getFavorites: (page = 1, size = 10) =>
+        fetchAPI<PostItem[]>(`/api/favorites?page=${page}&size=${size}`),
+};
+
 // Export all APIs
 export const api = {
     auth: authAPI,
@@ -438,6 +530,7 @@ export const api = {
     geoFeatures: geoFeaturesAPI,
     arLandforms: arLandformsAPI,
     questions: questionsAPI,
+    community: communityAPI,
 };
 
 export default api;

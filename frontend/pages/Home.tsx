@@ -70,7 +70,10 @@ const Home: React.FC = () => {
 
       <main className="flex flex-col gap-6 p-4">
         <section className="w-full">
-          <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-surface-dark shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all hover:shadow-lg dark:shadow-none dark:border dark:border-slate-700/50">
+          <div
+            className="group relative overflow-hidden rounded-2xl bg-white dark:bg-surface-dark shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all hover:shadow-lg dark:shadow-none dark:border dark:border-slate-700/50 cursor-pointer"
+            onClick={() => trivia?.id && navigate(`/trivia/${trivia.id}`)}
+          >
             <div className="relative h-48 w-full overflow-hidden">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"

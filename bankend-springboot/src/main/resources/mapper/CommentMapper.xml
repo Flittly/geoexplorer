@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.CommentMapper">
+
+    <resultMap id="CommentResult" type="com.flittly.bankendspringboot.entity.Comment">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="postId" column="post_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="parentId" column="parent_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="content" column="content"/>
+        <result property="images" column="images" typeHandler="com.flittly.bankendspringboot.config.JsonListTypeHandler"/>
+        <result property="isAccepted" column="is_accepted"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findByPostId" resultMap="CommentResult">
+        SELECT * FROM comments
+        WHERE post_id = #{postId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+        ORDER BY created_at ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultMap="CommentResult">
+        SELECT * FROM comments WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO comments (id, post_id, user_id, parent_id, content, images, is_accepted, like_count, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{postId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{parentId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
+                #{content},
+                #{images, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler},
+                #{isAccepted}, #{likeCount}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM comments WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </delete>
+
+    <update id="updateAccepted">
+        UPDATE comments SET is_accepted = #{isAccepted}
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="incrementLikeCount">
+        UPDATE comments SET like_count = like_count + 1
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="decrementLikeCount">
+        UPDATE comments SET like_count = GREATEST(like_count - 1, 0)
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+</mapper>

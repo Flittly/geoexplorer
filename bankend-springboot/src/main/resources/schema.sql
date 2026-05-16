@@ -162,6 +162,81 @@ CREATE TABLE IF NOT EXISTS ar_landforms (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- ============================================================
+-- Community Module Tables
+-- ============================================================
+
+-- Posts table
+CREATE TABLE IF NOT EXISTS posts (
+    id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
+    post_type ENUM('share', 'checkin', 'question') NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    images JSON,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    like_count INT DEFAULT 0,
+    comment_count INT DEFAULT 0,
+    favorite_count INT DEFAULT 0,
+    is_top BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_posts_user_id (user_id),
+    INDEX idx_posts_type (post_type),
+    INDEX idx_posts_status (status),
+    INDEX idx_posts_created (created_at DESC),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Question details table
+CREATE TABLE IF NOT EXISTS question_details (
+    post_id CHAR(36) PRIMARY KEY,
+    is_accepted BOOLEAN DEFAULT FALSE,
+    accepted_answer_id CHAR(36),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Comments table
+CREATE TABLE IF NOT EXISTS comments (
+    id CHAR(36) PRIMARY KEY,
+    post_id CHAR(36) NOT NULL,
+    user_id CHAR(36) NOT NULL,
+    parent_id CHAR(36),
+    content TEXT NOT NULL,
+    images JSON,
+    is_accepted BOOLEAN DEFAULT FALSE,
+    like_count INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_comments_post_id (post_id),
+    INDEX idx_comments_user_id (user_id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Likes table
+CREATE TABLE IF NOT EXISTS likes (
+    id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
+    target_id CHAR(36) NOT NULL,
+    target_type ENUM('post', 'comment') NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_likes_user_target (user_id, target_id, target_type),
+    INDEX idx_likes_target (target_id, target_type),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Favorites table
+CREATE TABLE IF NOT EXISTS favorites (
+    id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
+    post_id CHAR(36) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_favorites_user_post (user_id, post_id),
+    INDEX idx_favorites_user (user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Seed data
 
 -- Test user (password: password123)

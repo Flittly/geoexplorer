@@ -25,3 +25,15 @@ dist-ssr
 
 # Backend environment variables
 backend/.env
+
+# Uploaded files
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.bmp
+
+# Spring Boot build output
+bankend-springboot/target/

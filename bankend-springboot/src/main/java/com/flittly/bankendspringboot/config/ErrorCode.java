@@ -51,7 +51,26 @@ public enum ErrorCode {
     GEO_FEATURE_SEARCH_FAILED(2601, "地理特征搜索失败"),
 
     // AR 地貌相关 2700-2799
-    AR_LANDFORM_NOT_FOUND(2700, "AR 地貌不存在");
+    AR_LANDFORM_NOT_FOUND(2700, "AR 地貌不存在"),
+
+    // 社区帖子相关 2800-2899
+    POST_NOT_FOUND(2800, "帖子不存在"),
+    POST_CREATE_FAILED(2801, "帖子创建失败"),
+    POST_UPDATE_FAILED(2802, "帖子更新失败"),
+    POST_DELETE_FAILED(2803, "帖子删除失败"),
+    POST_ALREADY_APPROVED(2804, "帖子已审核"),
+    POST_NOT_QUESTION(2805, "帖子不是提问类型"),
+
+    // 评论相关 2900-2999
+    COMMENT_NOT_FOUND(2900, "评论不存在"),
+    COMMENT_CREATE_FAILED(2901, "评论创建失败"),
+    COMMENT_DELETE_FAILED(2902, "评论删除失败"),
+
+    // 点赞相关 3000-3099
+    LIKE_TOGGLE_FAILED(3000, "点赞操作失败"),
+
+    // 收藏相关 3100-3199
+    FAVORITE_TOGGLE_FAILED(3100, "收藏操作失败");
 
     private final int code;
     private final String message;
