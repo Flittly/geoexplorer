@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { communityAPI, PostCreateData, getCurrentUser } from '../api';
 
@@ -20,6 +20,13 @@ const CreatePost: React.FC = () => {
     const [images, setImages] = useState<string[]>([]);
     const [uploading, setUploading] = useState(false);
     const [publishing, setPublishing] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -64,7 +71,12 @@ const CreatePost: React.FC = () => {
 
     const handlePublish = async () => {
         if (!title.trim() || !content.trim()) return;
-        if (!user) { navigate('/login'); return; }
+
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
 
         setPublishing(true);
         try {
@@ -75,10 +87,16 @@ const CreatePost: React.FC = () => {
                 images: images.length > 0 ? images : undefined,
             };
             await communityAPI.createPost(data);
+            alert('发布成功，等待审核通过后会显示在社区中');
             navigate('/community');
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to publish', err);
-            alert('发布失败，请重试');
+            if (err?.message?.includes('401') || err?.message?.includes('403')) {
+                alert('登录已过期，请重新登录');
+                navigate('/login');
+            } else {
+                alert('发布失败，请重试');
+            }
         } finally {
             setPublishing(false);
         }

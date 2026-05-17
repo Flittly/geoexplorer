@@ -30,6 +30,7 @@ const LevelManagement = lazy(() => import('../admin/src/pages/LevelManagement').
 const QuestionManagement = lazy(() => import('../admin/src/pages/QuestionManagement').then(m => ({ default: m.QuestionManagement })));
 const TriviaManagement = lazy(() => import('../admin/src/pages/TriviaManagement').then(m => ({ default: m.TriviaManagement })));
 const NotificationManagement = lazy(() => import('../admin/src/pages/NotificationManagement').then(m => ({ default: m.NotificationManagement })));
+const PostManagement = lazy(() => import('../admin/src/pages/PostManagement').then(m => ({ default: m.PostManagement })));
 
 // Fix: Make children optional in type definition to prevent TS error about missing children
 const Layout = ({ children }: { children?: React.ReactNode }) => {
@@ -95,6 +96,7 @@ export default function App() {
           <Route path="/admin/questions" element={<AdminLayout><QuestionManagement /></AdminLayout>} />
           <Route path="/admin/trivia" element={<AdminLayout><TriviaManagement /></AdminLayout>} />
           <Route path="/admin/notifications" element={<AdminLayout><NotificationManagement /></AdminLayout>} />
+          <Route path="/admin/posts" element={<AdminLayout><PostManagement /></AdminLayout>} />
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
         </Routes>
       </Layout>

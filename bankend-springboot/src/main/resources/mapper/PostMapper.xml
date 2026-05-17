@@ -5,11 +5,11 @@
     <resultMap id="PostResult" type="com.flittly.bankendspringboot.entity.Post">
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
-        <result property="postType" column="post_type" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="postType" column="post_type" typeHandler="com.flittly.bankendspringboot.config.PostTypeHandler"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
         <result property="images" column="images" typeHandler="com.flittly.bankendspringboot.config.JsonListTypeHandler"/>
-        <result property="status" column="status" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="status" column="status" typeHandler="com.flittly.bankendspringboot.config.PostStatusHandler"/>
         <result property="likeCount" column="like_count"/>
         <result property="commentCount" column="comment_count"/>
         <result property="favoriteCount" column="favorite_count"/>
@@ -22,10 +22,10 @@
         SELECT * FROM posts
         <where>
             <if test="postType != null and postType != ''">
-                post_type = #{postType, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+                post_type = #{postType}
             </if>
             <if test="status != null and status != ''">
-                AND status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+                AND status = #{status}
             </if>
             <if test="userId != null">
                 AND user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
@@ -43,10 +43,10 @@
         INSERT INTO posts (id, user_id, post_type, title, content, images, status, like_count, comment_count, favorite_count, is_top, created_at, updated_at)
         VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
                 #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
-                #{postType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{postType, typeHandler=com.flittly.bankendspringboot.config.PostTypeHandler},
                 #{title}, #{content},
                 #{images, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler},
-                #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{status, typeHandler=com.flittly.bankendspringboot.config.ProgressStatusHandler},
                 #{likeCount}, #{commentCount}, #{favoriteCount}, #{isTop}, #{createdAt}, #{updatedAt})
     </insert>
 
@@ -56,7 +56,7 @@
             <if test="title != null">title = #{title},</if>
             <if test="content != null">content = #{content},</if>
             <if test="images != null">images = #{images, typeHandler=com.flittly.bankendspringboot.config.JsonListTypeHandler},</if>
-            <if test="status != null">status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="status != null">status = #{status, typeHandler=com.flittly.bankendspringboot.config.ProgressStatusHandler},</if>
             <if test="isTop != null">is_top = #{isTop},</if>
             updated_at = NOW()
         </set>
@@ -98,3 +98,6 @@
     </update>
 
 </mapper>
+
+
+

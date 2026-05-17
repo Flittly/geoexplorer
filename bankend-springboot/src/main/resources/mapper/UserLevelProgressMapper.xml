@@ -6,7 +6,7 @@
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="levelId" column="level_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
-        <result property="status" column="status" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="status" column="status" typeHandler="com.flittly.bankendspringboot.config.PostStatusHandler"/>
         <result property="score" column="score"/>
         <result property="stars" column="stars"/>
         <result property="completionPercentage" column="completion_percentage"/>
@@ -25,13 +25,13 @@
 
     <insert id="insert" useGeneratedKeys="false">
         INSERT INTO user_level_progress (id, user_id, level_id, status, score, stars, completion_percentage, completed_at, created_at, updated_at)
-        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{levelId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{score}, #{stars}, #{completionPercentage}, #{completedAt}, #{createdAt}, #{updatedAt})
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{levelId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{status, typeHandler=com.flittly.bankendspringboot.config.ProgressStatusHandler}, #{score}, #{stars}, #{completionPercentage}, #{completedAt}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update">
         UPDATE user_level_progress
         <set>
-            <if test="status != null">status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="status != null">status = #{status, typeHandler=com.flittly.bankendspringboot.config.ProgressStatusHandler},</if>
             <if test="score != null">score = #{score},</if>
             <if test="stars != null">stars = #{stars},</if>
             <if test="completionPercentage != null">completion_percentage = #{completionPercentage},</if>
@@ -42,3 +42,6 @@
     </update>
 
 </mapper>
+
+
+

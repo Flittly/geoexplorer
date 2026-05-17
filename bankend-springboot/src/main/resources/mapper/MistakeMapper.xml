@@ -7,8 +7,8 @@
         <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="title" column="title"/>
         <result property="question" column="question"/>
-        <result property="category" column="category" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-        <result property="masteryLevel" column="mastery_level" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="category" column="category" typeHandler="com.flittly.bankendspringboot.config.CategoryTypeHandler"/>
+        <result property="masteryLevel" column="mastery_level" typeHandler="com.flittly.bankendspringboot.config.MasteryLevelHandler"/>
         <result property="imageUrl" column="image_url"/>
         <result property="explanation" column="explanation"/>
         <result property="addedAt" column="added_at"/>
@@ -19,8 +19,8 @@
         SELECT * FROM mistakes
         <where>
             <if test="userId != null">user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}</if>
-            <if test="category != null and category != ''">AND category = #{category, typeHandler=org.apache.ibatis.type.EnumTypeHandler}</if>
-            <if test="masteryLevel != null and masteryLevel != ''">AND mastery_level = #{masteryLevel, typeHandler=org.apache.ibatis.type.EnumTypeHandler}</if>
+            <if test="category != null and category != ''">AND category = #{category, typeHandler=com.flittly.bankendspringboot.config.CategoryTypeHandler}</if>
+            <if test="masteryLevel != null and masteryLevel != ''">AND mastery_level = #{masteryLevel, typeHandler=com.flittly.bankendspringboot.config.MasteryLevelHandler}</if>
         </where>
         ORDER BY added_at DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -32,13 +32,13 @@
 
     <insert id="insert" useGeneratedKeys="false">
         INSERT INTO mistakes (id, user_id, title, question, category, mastery_level, image_url, explanation, added_at, updated_at)
-        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{title}, #{question}, #{category, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{masteryLevel, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{imageUrl}, #{explanation}, #{addedAt}, #{updatedAt})
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{title}, #{question}, #{category, typeHandler=com.flittly.bankendspringboot.config.CategoryTypeHandler}, #{masteryLevel, typeHandler=com.flittly.bankendspringboot.config.MasteryLevelHandler}, #{imageUrl}, #{explanation}, #{addedAt}, #{updatedAt})
     </insert>
 
     <update id="update">
         UPDATE mistakes
         <set>
-            <if test="masteryLevel != null">mastery_level = #{masteryLevel, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="masteryLevel != null">mastery_level = #{masteryLevel, typeHandler=com.flittly.bankendspringboot.config.MasteryLevelHandler},</if>
             <if test="question != null">question = #{question},</if>
             updated_at = NOW()
         </set>
@@ -50,3 +50,6 @@
     </delete>
 
 </mapper>
+
+
+

@@ -6,7 +6,7 @@
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="targetId" column="target_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
-        <result property="targetType" column="target_type" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="targetType" column="target_type" typeHandler="com.flittly.bankendspringboot.config.TargetTypeHandler"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
@@ -14,7 +14,7 @@
         SELECT * FROM likes
         WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
           AND target_id = #{targetId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
-          AND target_type = #{targetType, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+          AND target_type = #{targetType}
     </select>
 
     <insert id="insert" useGeneratedKeys="false">
@@ -22,7 +22,7 @@
         VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
                 #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
                 #{targetId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler},
-                #{targetType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{targetType},
                 #{createdAt})
     </insert>
 
@@ -30,7 +30,10 @@
         DELETE FROM likes
         WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
           AND target_id = #{targetId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
-          AND target_type = #{targetType, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+          AND target_type = #{targetType}
     </delete>
 
 </mapper>
+
+
+

@@ -123,6 +123,7 @@ const AdminDashboard: React.FC = () => {
               { path: '/admin/levels', icon: 'school', label: '课程管理' },
               { path: '/admin/questions', icon: 'quiz', label: '题库管理' },
               { path: '/admin/trivia', icon: 'lightbulb', label: '每日百科' },
+              { path: '/admin/posts', icon: 'rate_review', label: '帖子审核' },
               { path: '/admin/notifications', icon: 'notifications', label: '消息通知' },
             ].map((item) => (
               <button

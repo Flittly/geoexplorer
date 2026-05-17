@@ -6,7 +6,7 @@
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="name" column="name"/>
         <result property="description" column="description"/>
-        <result property="type" column="type" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="type" column="type" typeHandler="com.flittly.bankendspringboot.config.LandformTypeHandler"/>
         <result property="imageUrl" column="image_url"/>
         <result property="elevation" column="elevation"/>
         <result property="isActive" column="is_active"/>
@@ -17,7 +17,7 @@
         SELECT * FROM ar_landforms
         <where>
             is_active = true
-            <if test="landformType != null and landformType != ''">AND type = #{landformType, typeHandler=org.apache.ibatis.type.EnumTypeHandler}</if>
+            <if test="landformType != null and landformType != ''">AND type = #{landformType, typeHandler=com.flittly.bankendspringboot.config.LandformTypeHandler}</if>
         </where>
     </select>
 
@@ -27,7 +27,10 @@
 
     <insert id="insert" useGeneratedKeys="false">
         INSERT INTO ar_landforms (id, name, description, type, image_url, elevation, is_active, created_at)
-        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{type, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{imageUrl}, #{elevation}, #{isActive}, #{createdAt})
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{type, typeHandler=com.flittly.bankendspringboot.config.LandformTypeHandler}, #{imageUrl}, #{elevation}, #{isActive}, #{createdAt})
     </insert>
 
 </mapper>
+
+
+

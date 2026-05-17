@@ -32,7 +32,7 @@ public class PostService {
     private final FavoriteMapper favoriteMapper;
 
     public List<PostResponse> getPosts(String postType, String status, UUID userId, int page, int size) {
-        String queryStatus = userId == null ? "approved" : status;
+        String queryStatus = status != null ? status : "approved";
         int offset = (page - 1) * size;
         List<Post> posts = postMapper.findByFilters(postType, queryStatus, null, size, offset);
         return posts.stream()

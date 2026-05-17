@@ -9,9 +9,9 @@
         <result property="phone" column="phone"/>
         <result property="passwordHash" column="password_hash"/>
         <result property="avatarUrl" column="avatar_url"/>
-        <result property="gender" column="gender" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="gender" column="gender" typeHandler="com.flittly.bankendspringboot.config.GenderTypeHandler"/>
         <result property="age" column="age"/>
-        <result property="level" column="level" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="level" column="level" typeHandler="com.flittly.bankendspringboot.config.UserLevelHandler"/>
         <result property="totalStars" column="total_stars"/>
         <result property="isVerified" column="is_verified"/>
         <result property="isActive" column="is_active"/>
@@ -44,7 +44,7 @@
 
     <insert id="insert" useGeneratedKeys="false">
         INSERT INTO users (id, name, email, phone, password_hash, avatar_url, gender, age, level, total_stars, is_verified, is_active, created_at, updated_at)
-        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{email}, #{phone}, #{passwordHash}, #{avatarUrl}, #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{age}, #{level, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{totalStars}, #{isVerified}, #{isActive}, #{createdAt}, #{updatedAt})
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{email}, #{phone}, #{passwordHash}, #{avatarUrl}, #{gender, typeHandler=com.flittly.bankendspringboot.config.GenderTypeHandler}, #{age}, #{level, typeHandler=com.flittly.bankendspringboot.config.UserLevelHandler}, #{totalStars}, #{isVerified}, #{isActive}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update">
@@ -55,9 +55,9 @@
             <if test="phone != null">phone = #{phone},</if>
             <if test="passwordHash != null">password_hash = #{passwordHash},</if>
             <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
-            <if test="gender != null">gender = #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="gender != null">gender = #{gender, typeHandler=com.flittly.bankendspringboot.config.GenderTypeHandler},</if>
             <if test="age != null">age = #{age},</if>
-            <if test="level != null">level = #{level, typeHandler=org.apache.ibatis.type.EnumTypeHandler},</if>
+            <if test="level != null">level = #{level, typeHandler=com.flittly.bankendspringboot.config.UserLevelHandler},</if>
             <if test="totalStars != null">total_stars = #{totalStars},</if>
             <if test="isVerified != null">is_verified = #{isVerified},</if>
             <if test="isActive != null">is_active = #{isActive},</if>
@@ -67,8 +67,11 @@
     </update>
 
     <update id="updateStarsAndLevel">
-        UPDATE users SET total_stars = #{totalStars}, level = #{level, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, updated_at = NOW()
+        UPDATE users SET total_stars = #{totalStars}, level = #{level, typeHandler=com.flittly.bankendspringboot.config.UserLevelHandler}, updated_at = NOW()
         WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
     </update>
 
 </mapper>
+
+
+
