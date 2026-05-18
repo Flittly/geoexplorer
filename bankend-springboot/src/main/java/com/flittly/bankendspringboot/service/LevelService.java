@@ -63,19 +63,19 @@ public class LevelService {
             progress.setCreatedAt(LocalDateTime.now());
             progress.setUpdatedAt(LocalDateTime.now());
 
-            if (request.getStatus() != null) progress.setStatus(ProgressStatus.valueOf(request.getStatus()));
+            if (request.getStatus() != null) progress.setStatus(ProgressStatus.valueOf(request.getStatus().toUpperCase()));
             if (request.getScore() != null) progress.setScore(request.getScore());
             if (request.getStars() != null) progress.setStars(request.getStars());
             if (request.getCompletionPercentage() != null) progress.setCompletionPercentage(request.getCompletionPercentage());
 
             progressMapper.insert(progress);
         } else {
-            if (request.getStatus() != null) progress.setStatus(ProgressStatus.valueOf(request.getStatus()));
+            if (request.getStatus() != null) progress.setStatus(ProgressStatus.valueOf(request.getStatus().toUpperCase()));
             if (request.getScore() != null) progress.setScore(request.getScore());
             if (request.getStars() != null) progress.setStars(request.getStars());
             if (request.getCompletionPercentage() != null) progress.setCompletionPercentage(request.getCompletionPercentage());
 
-            if ("COMPLETED".equals(request.getStatus())) {
+            if ("COMPLETED".equalsIgnoreCase(request.getStatus())) {
                 progress.setCompletedAt(LocalDateTime.now());
             }
 

@@ -247,34 +247,34 @@ VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Test User', 'test@example.com',
 
 -- Levels
 INSERT INTO levels (id, name, description, order_index, unlock_requirement, is_active, created_at, updated_at) VALUES
-('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Rock Cycle', 'Learn about the rock cycle and how rocks are formed', 1, 0, TRUE, NOW(), NOW()),
-('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Plate Tectonics', 'Understanding plate tectonics and continental drift', 2, 5, TRUE, NOW(), NOW()),
-('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'Weather & Climate', 'Explore weather patterns and climate systems', 3, 10, TRUE, NOW(), NOW()),
-('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'Rivers & Erosion', 'How rivers shape the landscape through erosion', 4, 15, TRUE, NOW(), NOW()),
-('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', 'Volcanoes', 'Understanding volcanic activity and its effects', 5, 20, TRUE, NOW(), NOW());
+('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '岩石循环', '了解岩石循环以及岩石是如何形成的', 1, 0, TRUE, NOW(), NOW()),
+('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', '板块构造', '了解板块构造和大陆漂移', 2, 5, TRUE, NOW(), NOW()),
+('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', '天气与气候', '探索天气模式和气候系统', 3, 10, TRUE, NOW(), NOW()),
+('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', '河流与侵蚀', '了解河流如何通过侵蚀塑造地貌', 4, 15, TRUE, NOW(), NOW()),
+('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', '火山', '了解火山活动及其影响', 5, 20, TRUE, NOW(), NOW());
 
 -- Questions for Rock Cycle level
 INSERT INTO questions (id, level_id, question, options, correct_answer, explanation, order_index, is_active, created_at) VALUES
 ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
- 'What are the three main types of rocks?',
- '["Igneous, Sedimentary, Metamorphic", "Granite, Limestone, Marble", "Mineral, Crystal, Fossil", "Volcanic, Oceanic, Continental"]',
- 0, 'The three main types of rocks are igneous (formed from cooled magma), sedimentary (formed from compressed layers), and metamorphic (changed by heat and pressure).', 1, TRUE, NOW()),
+ '岩石的三大类型是什么？',
+ '["火成岩、沉积岩、变质岩", "花岗岩、石灰岩、大理�?", "矿物、晶体、化石", "火山岩、海洋岩、大陆岩"]',
+ 0, '岩石的三大类型是火成�?(由岩浆冷却形成)、�?�积�?(由�?(由�?�缩层形成)和)和�?�质�?(�?�热�?�压�?�变化形成)。', 1, TRUE, NOW()),
 ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
- 'How is igneous rock formed?',
- '["From compressed sediments", "From cooled and solidified magma or lava", "From heat and pressure on existing rocks", "From organic material accumulation"]',
- 1, 'Igneous rock forms when magma (below surface) or lava (above surface) cools and solidifies.', 2, TRUE, NOW()),
+ '火成�?�是�?�何形成的？',
+ '["由�?�缩由�?�缩�?��?�物形成", "由�?�却�?��?�化的�?��?��?��?�形成", "由"由�?��?��?��?��?��?��?��?�形成", "由"由�?��?��?��?��?��?�形成"]',
+ 1, '火成�?��?��?��?�(地�?)或�?��?(地地�?)�?�却�?��?��?�形成的。', 2, TRUE, NOW()),
 ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
- 'What process turns sedimentary rock into metamorphic rock?',
- '["Erosion", "Weathering", "Heat and pressure", "Cooling"]',
- 2, 'Metamorphic rock is formed when existing rocks are subjected to intense heat and pressure, causing physical and chemical changes.', 3, TRUE, NOW()),
+ '�?么过程过程�?��?��?��?��?��?��?��?��?�？',
+ '["�?�蚀", "�?�化", "�?��?��?��?�", "�?�却"]',
+ 2, '�?�质�?�是�?�现有的�?�石�?�到�?��?��?��?��?��?�后�?��?��?��?��?��?��?��?��?��?�。', 3, TRUE, NOW()),
 ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
- 'Which type of rock is most likely to contain fossils?',
- '["Igneous", "Sedimentary", "Metamorphic", "Volcanic"]',
- 1, 'Sedimentary rocks are formed in layers and can preserve fossils of ancient organisms.', 4, TRUE, NOW()),
+ '�?�种�?��?��?��?��?��?��?��?��?��?��?�？',
+ '["�?��?��?�", "�?��?��?�", "�?��?��?�", "�?��?�岩"]',
+ 1, '�?��?��?��?��?��?��?��?�形成�?��?��?��?�，�?��?�以�?�存�?��?��?��?��?��?��?�。', 4, TRUE, NOW()),
 ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
- 'What drives the rock cycle?',
- '["Wind", "Water only", "Earth internal heat and solar energy", "Gravity alone"]',
- 2, 'The rock cycle is driven by Earth internal heat (plate tectonics, volcanism) and solar energy (weathering, erosion).', 5, TRUE, NOW());
+ '�?么�?�动�?��?��?��?��?�？',
+ '["�?�", "仅�?��?�", "地�?��?��?��?��?��?�能�?�", "仅�?�重�?�"]',
+ 2, '�?�石�?�环�?�地�?��?��?�(�?��?��?��?��?��?��?��?�)�?��?��?�能�?��?��?�(�?��?��?��?��?��?��?��?�)�?��?��?�能�?��?��?�。', 5, TRUE, NOW());
 
 -- Daily trivia
 INSERT INTO daily_trivia (id, title, description, image_url, location, region, featured_date, is_active, created_at) VALUES

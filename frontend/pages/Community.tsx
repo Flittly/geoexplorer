@@ -111,6 +111,12 @@ const Community: React.FC = () => {
     return (
         <div className="pb-24 min-h-screen bg-background-light dark:bg-background-dark">
             <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+                <button
+                    onClick={() => navigate('/')}
+                    className="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                >
+                    <span className="material-symbols-outlined">arrow_back</span>
+                </button>
                 <h1 className="text-xl font-bold text-slate-900 dark:text-white">社区</h1>
                 <button
                     onClick={() => user ? navigate('/community/create') : navigate('/login')}

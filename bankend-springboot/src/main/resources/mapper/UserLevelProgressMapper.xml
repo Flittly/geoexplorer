@@ -6,7 +6,7 @@
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="levelId" column="level_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
-        <result property="status" column="status" typeHandler="com.flittly.bankendspringboot.config.PostStatusHandler"/>
+        <result property="status" column="status" typeHandler="com.flittly.bankendspringboot.config.ProgressStatusHandler"/>
         <result property="score" column="score"/>
         <result property="stars" column="stars"/>
         <result property="completionPercentage" column="completion_percentage"/>

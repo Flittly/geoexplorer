@@ -19,9 +19,16 @@ public class LevelController {
 
     private final LevelService levelService;
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<Level>> getAllLevels() {
-        return ResponseEntity.ok(levelService.getAllLevels());
+        try {
+            List<Level> levels = levelService.getAllLevels();
+            System.out.println("Levels found: " + levels.size());
+            return ResponseEntity.ok(levels);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @GetMapping("/{level_id}")

@@ -23,7 +23,7 @@ export const DEFAULT_USER_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 /**
  * Generic hook for fetching data with loading and error states
  */
-function useAsyncData<T>(
+export function useAsyncData<T>(
     fetchFn: () => Promise<T>,
     dependencies: unknown[] = []
 ) {
@@ -124,6 +124,8 @@ export function useUserLevelProgress(userId: string = DEFAULT_USER_ID) {
         [userId]
     );
 }
+
+export const useLevelProgress = useUserLevelProgress;
 
 /**
  * Hook for fetching mistakes with filters

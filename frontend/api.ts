@@ -247,7 +247,10 @@ export interface Level {
     description?: string;
     order_index: number;
     unlock_requirement: number;
+    image_url?: string;
+    is_active: boolean;
     created_at: string;
+    updated_at: string;
 }
 
 export interface UserLevelProgress {
@@ -261,6 +264,8 @@ export interface UserLevelProgress {
     completed_at?: string;
     level_name?: string;
     level_order?: number;
+    created_at: string;
+    updated_at: string;
 }
 
 export const levelsAPI = {
@@ -400,7 +405,8 @@ export interface Question {
     question: string;
     options: string[];
     correct_answer: number;
-    explanation: string;
+    explanation?: string;
+    image_url?: string;
     order_index: number;
 }
 

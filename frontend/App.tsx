@@ -36,7 +36,7 @@ const PostManagement = lazy(() => import('../admin/src/pages/PostManagement').th
 const Layout = ({ children }: { children?: React.ReactNode }) => {
   const location = useLocation();
   // Don't show standard nav on immersive pages like Globe or AR, and auth pages, and admin pages
-  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/community', '/community/create'].includes(location.pathname) || 
+  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/community/create'].includes(location.pathname) || 
                   location.pathname.startsWith('/admin') ||
                   location.pathname.startsWith('/level/') ||
                   location.pathname.startsWith('/quiz/') ||
