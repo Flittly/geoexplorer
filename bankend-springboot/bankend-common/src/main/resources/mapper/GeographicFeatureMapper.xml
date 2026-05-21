@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.GeographicFeatureMapper">
+
+    <resultMap id="GeoFeatureResult" type="com.flittly.bankendspringboot.entity.GeographicFeature">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="featureType" column="feature_type"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="region" column="region"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="GeoFeatureWithStatsResult" type="com.flittly.bankendspringboot.entity.GeographicFeature" extends="GeoFeatureResult">
+        <result property="stats" column="stats" typeHandler="com.flittly.bankendspringboot.config.JsonMapTypeHandler"/>
+    </resultMap>
+
+    <select id="findByFilters" resultMap="GeoFeatureWithStatsResult">
+        SELECT * FROM geographic_features
+        <where>
+            is_active = true
+            <if test="featureType != null and featureType != ''">AND feature_type = #{featureType}</if>
+            <if test="region != null and region != ''">AND region = #{region}</if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultMap="GeoFeatureWithStatsResult">
+        SELECT * FROM geographic_features WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO geographic_features (id, name, description, feature_type, latitude, longitude, region, image_url, stats, is_active, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{featureType}, #{latitude}, #{longitude}, #{region}, #{imageUrl}, #{stats, typeHandler=com.flittly.bankendspringboot.config.JsonMapTypeHandler}, #{isActive}, #{createdAt})
+    </insert>
+
+    <select id="search" resultMap="GeoFeatureWithStatsResult">
+        SELECT * FROM geographic_features
+        WHERE is_active = true AND (name LIKE CONCAT('%', #{query}, '%') OR description LIKE CONCAT('%', #{query}, '%'))
+        LIMIT #{limit}
+    </select>
+
+</mapper>
+
+
+

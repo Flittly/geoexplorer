@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.DailyTriviaMapper">
+
+    <resultMap id="TriviaResult" type="com.flittly.bankendspringboot.entity.DailyTrivia">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="location" column="location"/>
+        <result property="region" column="region"/>
+        <result property="featuredDate" column="featured_date"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findByFeaturedDate" resultMap="TriviaResult">
+        SELECT * FROM daily_trivia WHERE featured_date = #{date} AND is_active = true LIMIT 1
+    </select>
+
+    <select id="findAll" resultMap="TriviaResult">
+        SELECT * FROM daily_trivia WHERE is_active = true ORDER BY featured_date DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultMap="TriviaResult">
+        SELECT * FROM daily_trivia WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO daily_trivia (id, title, description, image_url, location, region, featured_date, is_active, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{title}, #{description}, #{imageUrl}, #{location}, #{region}, #{featuredDate}, #{isActive}, #{createdAt})
+    </insert>
+
+</mapper>
+
+
+

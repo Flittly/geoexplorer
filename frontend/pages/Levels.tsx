@@ -44,6 +44,8 @@ const Levels: React.FC = () => {
 
   const loading = levelsLoading || progressLoading;
 
+  console.log('Levels debug:', { levels, progressList, userId: user?.id });
+
   const sortedLevels = levels
     ? [...levels].sort((a, b) => a.order_index - b.order_index)
     : [];
@@ -121,6 +123,7 @@ const Levels: React.FC = () => {
               {[...sortedLevels].reverse().map((level, reverseIndex) => {
                 const index = sortedLevels.length - 1 - reverseIndex;
                 const status = getLevelStatus(level, index, sortedLevels, progressList);
+                console.log('Level status:', { name: level.name, index, status, progress: progressList?.find(p => p.level_id === level.id) });
                 const progress = progressList?.find(p => p.level_id === level.id);
 
                 if (status === 'locked') {

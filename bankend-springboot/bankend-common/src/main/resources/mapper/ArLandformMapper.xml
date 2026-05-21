@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.ArLandformMapper">
+
+    <resultMap id="ArLandformResult" type="com.flittly.bankendspringboot.entity.ArLandform">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="type" column="type" typeHandler="com.flittly.bankendspringboot.config.LandformTypeHandler"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="elevation" column="elevation"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="ArLandformResult">
+        SELECT * FROM ar_landforms
+        <where>
+            is_active = true
+            <if test="landformType != null and landformType != ''">AND type = #{landformType, typeHandler=com.flittly.bankendspringboot.config.LandformTypeHandler}</if>
+        </where>
+    </select>
+
+    <select id="findById" resultMap="ArLandformResult">
+        SELECT * FROM ar_landforms WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO ar_landforms (id, name, description, type, image_url, elevation, is_active, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{type, typeHandler=com.flittly.bankendspringboot.config.LandformTypeHandler}, #{imageUrl}, #{elevation}, #{isActive}, #{createdAt})
+    </insert>
+
+</mapper>
+
+
+
