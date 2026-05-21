@@ -38,6 +38,12 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        String method = exchange.getRequest().getMethod().name();
+
+        // 0. OPTIONS 预检请求直接放行（由 Gateway CORS 配置处理）
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return chain.filter(exchange);
+        }
 
         // 1. 检查白名单，直接放行
         if (isWhitelist(path)) {

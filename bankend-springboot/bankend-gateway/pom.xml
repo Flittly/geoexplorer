@@ -13,10 +13,10 @@
     <description>Spring Cloud Gateway for GeoExplorer</description>
 
     <dependencies>
-        <!-- Spring Cloud Gateway (Reactive) -->
+        <!-- Spring Cloud Gateway (Reactive, Boot 4.x compatible) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
         </dependency>
 
         <!-- JWT Dependencies -->
@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2023.0.1</version>
+                <version>2025.1.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

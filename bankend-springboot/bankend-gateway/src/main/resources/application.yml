@@ -1,36 +1,74 @@
 server:
   port: 8080
 
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+
 spring:
   application:
     name: bankend-gateway
   cloud:
     gateway:
-      # 路由配置：按服务划分
-      routes:
-        # 1. 认证服务 (8001)
-        - id: auth-service
-          uri: http://localhost:8001
-          predicates:
-            - Path=/api/auth/**,/api/admin/auth/**
+      server:
+        webflux:
+          # 全局 CORS 配置（Gateway 统一处理，下游服务不需要 CORS）
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns:
+                  - "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                  - PATCH
+                allowedHeaders:
+                  - "*"
+                allowCredentials: true
+                maxAge: 3600
+          # 路由配置：按服务划分
+          routes:
+            # 1. 认证服务 (8001)
+            - id: auth-service
+              uri: http://localhost:8001
+              predicates:
+                - Path=/api/auth/**
+            - id: auth-service-admin
+              uri: http://localhost:8001
+              predicates:
+                - Path=/api/admin/auth/**
 
-        # 2. 用户服务 (8002) - 关卡、题目、错题本、趣闻、用户信息
-        - id: user-service
-          uri: http://localhost:8002
-          predicates:
-            - Path=/api/levels/**,/api/questions/**,/api/mistakes/**,/api/trivia/**,/api/users/**
+            # 2. 用户服务 (8002)
+            - id: user-service
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/levels/**
+                - Path=/api/questions/**
+                - Path=/api/mistakes/**
+                - Path=/api/trivia/**
+                - Path=/api/users/**
 
-        # 3. 内容服务 (8003) - 社区帖子、评论、点赞、收藏
-        - id: content-service
-          uri: http://localhost:8003
-          predicates:
-            - Path=/api/posts/**,/api/comments/**,/api/likes/**,/api/favorites/**,/api/admin/posts/**
+            # 3. 内容服务 (8003)
+            - id: content-service
+              uri: http://localhost:8003
+              predicates:
+                - Path=/api/posts/**
+                - Path=/api/comments/**
+                - Path=/api/likes/**
+                - Path=/api/favorites/**
+                - Path=/api/admin/posts/**
 
-        # 4. 地理服务 (8004) - 地理要素、AR地貌、上传、首页
-        - id: geo-service
-          uri: http://localhost:8004
-          predicates:
-            - Path=/api/geo-features/**,/api/ar-landforms/**,/api/upload/**,/health
+            # 4. 地理服务 (8004)
+            - id: geo-service
+              uri: http://localhost:8004
+              predicates:
+                - Path=/api/geo-features/**
+                - Path=/api/ar-landforms/**
+                - Path=/api/upload/**
+                - Path=/health
 
 # 网关鉴权配置
 gateway:
@@ -38,6 +76,7 @@ gateway:
     whitelist:
       # 认证相关（公开）
       - /api/auth/login
+      - /api/auth/login/**
       - /api/auth/register
       - /api/auth/refresh
       - /api/auth/send-code

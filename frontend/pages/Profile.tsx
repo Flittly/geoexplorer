@@ -109,7 +109,7 @@ const Profile: React.FC = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'}/api/upload/avatar`, {
+      const response = await fetch(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:8080'}/api/upload/avatar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
