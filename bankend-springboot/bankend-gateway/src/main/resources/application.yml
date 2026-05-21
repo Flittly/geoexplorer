@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: bankend-gateway
+  cloud:
+    gateway:
+      # 路由配置：按服务划分
+      routes:
+        # 1. 认证服务 (8001)
+        - id: auth-service
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/auth/**,/api/admin/auth/**
+
+        # 2. 用户服务 (8002) - 关卡、题目、错题本、趣闻、用户信息
+        - id: user-service
+          uri: http://localhost:8002
+          predicates:
+            - Path=/api/levels/**,/api/questions/**,/api/mistakes/**,/api/trivia/**,/api/users/**
+
+        # 3. 内容服务 (8003) - 社区帖子、评论、点赞、收藏
+        - id: content-service
+          uri: http://localhost:8003
+          predicates:
+            - Path=/api/posts/**,/api/comments/**,/api/likes/**,/api/favorites/**,/api/admin/posts/**
+
+        # 4. 地理服务 (8004) - 地理要素、AR地貌、上传、首页
+        - id: geo-service
+          uri: http://localhost:8004
+          predicates:
+            - Path=/api/geo-features/**,/api/ar-landforms/**,/api/upload/**,/health
+
+# 网关鉴权配置
+gateway:
+  auth:
+    whitelist:
+      # 认证相关（公开）
+      - /api/auth/login
+      - /api/auth/register
+      - /api/auth/refresh
+      - /api/auth/send-code
+      # 关卡和题目（公开浏览）
+      - /api/levels
+      - /api/levels/
+      - /api/levels/**
+      - /api/questions/**
+      # 社区已审核帖子（公开浏览）
+      - /api/posts/approved/**
+      # 地理要素和趣闻（公开）
+      - /api/geo-features/**
+      - /api/ar-landforms/**
+      - /api/trivia/**
+      # 健康检查
+      - /health
+      - /actuator/**
+
+jwt:
+  secret: your-super-secret-jwt-key-change-in-production-geoexplorer-2024

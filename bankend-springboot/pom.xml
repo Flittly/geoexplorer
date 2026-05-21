@@ -21,6 +21,7 @@
         <module>bankend-user-service</module>
         <module>bankend-content-service</module>
         <module>bankend-geo-service</module>
+        <module>bankend-gateway</module>
     </modules>
 
     <properties>
