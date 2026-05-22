@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { levelsAPI, questionsAPI } from '../api';
-import { useCurrentUser, useLevelProgress, useAsyncData, DEFAULT_USER_ID } from '../hooks';
+import { useCurrentUser, useLevelProgress, useAsyncData } from '../hooks';
 
 const LevelDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const LevelDetail: React.FC = () => {
     () => questionsAPI.getQuestionsByLevel(levelId!),
     [levelId]
   );
-  const { data: progressList } = useLevelProgress(user?.id || DEFAULT_USER_ID);
+  const { data: progressList } = useLevelProgress(user?.id);
   const progress = progressList?.find((p) => p.level_id === levelId);
 
   const startQuiz = () => {
@@ -41,7 +41,7 @@ const LevelDetail: React.FC = () => {
     );
   }
 
-  const isCompleted = progress?.status === 'completed';
+  const isCompleted = progress?.status?.toLowerCase() === 'completed';
   const totalQuestions = questions?.length ?? 0;
 
   return (

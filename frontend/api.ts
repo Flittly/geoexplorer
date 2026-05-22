@@ -13,8 +13,47 @@ function getAccessToken(): string | null {
     return localStorage.getItem('access_token');
 }
 
+function getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
+}
+
+function setAccessToken(token: string) {
+    localStorage.setItem('access_token', token);
+}
+
+function clearAuthData() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+}
+
+// Track in-flight refresh to avoid concurrent refresh storms
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return false;
+
+    try {
+        const resp = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+        if (!resp.ok) return false;
+        const data = await resp.json();
+        setAccessToken(data.access_token);
+        if (data.refresh_token) {
+            localStorage.setItem('refresh_token', data.refresh_token);
+        }
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 /**
- * Generic fetch wrapper with error handling
+ * Generic fetch wrapper with error handling and auto token refresh
  */
 async function fetchAPI<T>(
     endpoint: string,
@@ -32,7 +71,7 @@ async function fetchAPI<T>(
         (defaultHeaders as Record<string, string>)['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
         ...options,
         headers: {
             ...defaultHeaders,
@@ -40,6 +79,38 @@ async function fetchAPI<T>(
         },
     });
 
+    // 401 + has refresh token → try refresh once and retry
+    if (response.status === 401 && getRefreshToken()) {
+        if (!refreshPromise) {
+            refreshPromise = refreshAccessToken().finally(() => {
+                refreshPromise = null;
+            });
+        }
+        const refreshed = await refreshPromise;
+
+        if (refreshed) {
+            // Retry with new token
+            const retryHeaders: HeadersInit = {
+                'Content-Type': 'application/json',
+            };
+            const newToken = getAccessToken();
+            if (newToken) {
+                (retryHeaders as Record<string, string>)['Authorization'] = `Bearer ${newToken}`;
+            }
+
+            response = await fetch(url, {
+                ...options,
+                headers: {
+                    ...retryHeaders,
+                    ...options.headers,
+                },
+            });
+        } else {
+            clearAuthData();
+            window.location.href = '#/login';
+            throw new Error('登录已过期，请重新登录');
+        }
+    }
 
     if (!response.ok) {
         const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -96,11 +167,7 @@ export function getCurrentUser(): UserAuth | null {
 }
 
 // 清除登录信息
-export function clearAuthData() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
-}
+export { clearAuthData };
 
 export const authAPI = {
     // Send verification code

@@ -27,11 +27,10 @@ public class JwtUtil {
     }
 
     /**
-     * 获取用户 ID
+     * 获取用户 ID（来自 subject 字段）
      */
     public String getUserId(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("userId", String.class);
+        return getClaims(token).getSubject();
     }
 
     /**

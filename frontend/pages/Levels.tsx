@@ -10,12 +10,13 @@ const getLevelStatus = (
   progressList: ReturnType<typeof useLevelProgress>['data']
 ) => {
   const progress = progressList?.find(p => p.level_id === level.id);
-  if (progress?.status === 'completed') return 'completed';
-  if (progress?.status === 'active') return 'active';
+  const pStatus = progress?.status?.toLowerCase();
+  if (pStatus === 'completed') return 'completed';
+  if (pStatus === 'active') return 'active';
   if (index === 0) return 'unlocked';
   const prevLevel = levels[index - 1];
   const prevProgress = progressList?.find(p => p.level_id === prevLevel?.id);
-  if (prevProgress?.status === 'completed') return 'unlocked';
+  if (prevProgress?.status?.toLowerCase() === 'completed') return 'unlocked';
   return 'locked';
 };
 
@@ -50,7 +51,7 @@ const Levels: React.FC = () => {
     ? [...levels].sort((a, b) => a.order_index - b.order_index)
     : [];
 
-  const completedCount = progressList?.filter(p => p.status === 'completed').length ?? 0;
+  const completedCount = progressList?.filter(p => p.status?.toLowerCase() === 'completed').length ?? 0;
   const totalCount = sortedLevels.length;
   const totalStars = user?.total_stars ?? 0;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;

@@ -118,9 +118,9 @@ export function useLevels() {
 /**
  * Hook for fetching user level progress
  */
-export function useUserLevelProgress(userId: string = DEFAULT_USER_ID) {
+export function useUserLevelProgress(userId?: string) {
     return useAsyncData<UserLevelProgress[]>(
-        () => api.levels.getUserLevelProgress(userId),
+        () => userId ? api.levels.getUserLevelProgress(userId) : Promise.resolve([]),
         [userId]
     );
 }

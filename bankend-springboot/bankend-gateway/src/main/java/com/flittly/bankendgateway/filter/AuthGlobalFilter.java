@@ -45,29 +45,27 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        // 1. 检查白名单，直接放行
+        // 1. 提取 Token（如果有的话）
+        String token = extractToken(exchange.getRequest());
+
+        // 2. 白名单路径：如果有 Token 则尝试注入用户信息，但不阻止请求
         if (isWhitelist(path)) {
+            if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+                ServerHttpRequest mutated = injectUserHeaders(exchange.getRequest(), token);
+                return chain.filter(exchange.mutate().request(mutated).build());
+            }
             return chain.filter(exchange);
         }
 
-        // 2. 提取并校验 Token
-        String token = extractToken(exchange.getRequest());
+        // 3. 非白名单路径：校验 Token
         if (!StringUtils.hasText(token) || !jwtUtil.validateToken(token)) {
             return unauthorizedResponse(exchange, "未登录或登录已过期");
         }
 
-        // 3. 解析用户信息并注入请求头
-        String userId = jwtUtil.getUserId(token);
-        String username = jwtUtil.getUsername(token);
-        String roles = jwtUtil.getRoles(token);
+        // 4. 解析用户信息并注入请求头
+        ServerHttpRequest mutatedRequest = injectUserHeaders(exchange.getRequest(), token);
 
-        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                .header("X-User-Id", userId)
-                .header("X-Username", username)
-                .header("X-User-Roles", roles)
-                .build();
-
-        // 4. 继续执行过滤器链
+        // 5. 继续执行过滤器链
         return chain.filter(exchange.mutate().request(mutatedRequest).build());
     }
 
@@ -83,6 +81,19 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         List<String> whitelist = authProperties.getWhitelist();
         if (whitelist == null || whitelist.isEmpty()) return false;
         return whitelist.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    /**
+     * 注入用户信息头（使用 set 而非 add，防止客户端伪造的 X-User-Id 透传下去）
+     */
+    private ServerHttpRequest injectUserHeaders(ServerHttpRequest request, String token) {
+        return request.mutate()
+                .headers(headers -> {
+                    headers.set("X-User-Id", jwtUtil.getUserId(token));
+                    headers.set("X-Username", jwtUtil.getUsername(token));
+                    headers.set("X-User-Roles", jwtUtil.getRoles(token));
+                })
+                .build();
     }
 
     /**

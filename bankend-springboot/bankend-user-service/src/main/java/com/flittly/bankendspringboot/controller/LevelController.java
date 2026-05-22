@@ -46,7 +46,15 @@ public class LevelController {
     }
 
     @GetMapping("/user/{user_id}/progress")
-    public ResponseEntity<List<UserLevelProgress>> getUserLevelProgress(@PathVariable("user_id") UUID userId) {
+    public ResponseEntity<List<UserLevelProgress>> getUserLevelProgress(
+            @PathVariable("user_id") UUID userId,
+            @RequestHeader(value = "X-User-Id", required = false) String xUserId) {
+        if (xUserId == null) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!xUserId.equals(userId.toString())) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(levelService.getUserLevelProgress(userId));
     }
 
@@ -54,7 +62,14 @@ public class LevelController {
     public ResponseEntity<UserLevelProgress> updateLevelProgress(
             @PathVariable("user_id") UUID userId,
             @PathVariable("level_id") UUID levelId,
-            @RequestBody LevelProgressUpdateRequest request) {
+            @RequestBody LevelProgressUpdateRequest request,
+            @RequestHeader(value = "X-User-Id", required = false) String xUserId) {
+        if (xUserId == null) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!xUserId.equals(userId.toString())) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(levelService.updateLevelProgress(userId, levelId, request));
     }
 }

@@ -24,9 +24,9 @@ public class UserSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/trivia/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/levels/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/questions/**").permitAll()
+                        .requestMatchers("/api/trivia/**").permitAll()
+                        .requestMatchers("/api/levels/**").permitAll()
+                        .requestMatchers("/api/questions/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
