@@ -53,7 +53,7 @@ const Levels: React.FC = () => {
 
   const completedCount = progressList?.filter(p => p.status?.toLowerCase() === 'completed').length ?? 0;
   const totalCount = sortedLevels.length;
-  const totalStars = user?.total_stars ?? 0;
+  const totalStars = progressList?.reduce((sum, p) => sum + (p.stars || 0), 0) ?? 0;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   return (
