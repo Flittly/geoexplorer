@@ -269,7 +269,7 @@ const Levels: React.FC = () => {
         )}
       </main>
 
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-24 right-6 z-50">
         <button className="group flex items-center justify-center rounded-2xl h-14 bg-primary-green text-background-dark shadow-[0_4px_20px_rgba(19,236,91,0.4)] hover:shadow-[0_6px_25px_rgba(19,236,91,0.6)] hover:-translate-y-1 transition-all pl-4 pr-5 gap-2 overflow-hidden">
           <div className="bg-black/10 rounded-full p-1 group-hover:bg-black/20 transition-colors">
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>bolt</span>
@@ -293,7 +293,6 @@ const Levels: React.FC = () => {
           <span className="material-symbols-outlined">leaderboard</span>
           <span className="text-[10px] font-medium">排行</span>
         </button>
-        <div className="w-12"></div>
         <button
           onClick={() => navigate('/')}
           className="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-white transition-colors"

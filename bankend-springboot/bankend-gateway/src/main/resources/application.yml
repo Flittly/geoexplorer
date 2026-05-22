@@ -41,33 +41,66 @@ spring:
               predicates:
                 - Path=/api/admin/auth/**
 
-            # 2. 用户服务 (8002)
-            - id: user-service
+            # 2. 用户服务 (8002) — 每个 Path 独立路由
+            - id: user-levels
               uri: http://localhost:8002
               predicates:
                 - Path=/api/levels/**
+            - id: user-questions
+              uri: http://localhost:8002
+              predicates:
                 - Path=/api/questions/**
+            - id: user-mistakes
+              uri: http://localhost:8002
+              predicates:
                 - Path=/api/mistakes/**
+            - id: user-trivia
+              uri: http://localhost:8002
+              predicates:
                 - Path=/api/trivia/**
+            - id: user-users
+              uri: http://localhost:8002
+              predicates:
                 - Path=/api/users/**
 
-            # 3. 内容服务 (8003)
-            - id: content-service
+            # 3. 内容服务 (8003) — 每个 Path 独立路由
+            - id: content-posts
               uri: http://localhost:8003
               predicates:
                 - Path=/api/posts/**
+            - id: content-comments
+              uri: http://localhost:8003
+              predicates:
                 - Path=/api/comments/**
+            - id: content-likes
+              uri: http://localhost:8003
+              predicates:
                 - Path=/api/likes/**
+            - id: content-favorites
+              uri: http://localhost:8003
+              predicates:
                 - Path=/api/favorites/**
+            - id: content-admin-posts
+              uri: http://localhost:8003
+              predicates:
                 - Path=/api/admin/posts/**
 
-            # 4. 地理服务 (8004)
-            - id: geo-service
+            # 4. 地理服务 (8004) — 每个 Path 独立路由
+            - id: geo-features
               uri: http://localhost:8004
               predicates:
                 - Path=/api/geo-features/**
+            - id: geo-ar-landforms
+              uri: http://localhost:8004
+              predicates:
                 - Path=/api/ar-landforms/**
+            - id: geo-upload
+              uri: http://localhost:8004
+              predicates:
                 - Path=/api/upload/**
+            - id: geo-health
+              uri: http://localhost:8004
+              predicates:
                 - Path=/health
 
 # 网关鉴权配置
