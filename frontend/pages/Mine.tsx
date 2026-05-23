@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCurrentUser } from '../hooks';
+import { useCurrentUser, useLevelProgress } from '../hooks';
 import { clearAuthData } from '../api';
 
 const Mine: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useCurrentUser();
+  const { data: levelProgress } = useLevelProgress(user?.id);
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refresh_token');
@@ -79,7 +80,7 @@ const Mine: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20">
               <span className="text-amber-500 text-sm">★</span>
-              <span className="text-sm font-medium text-amber-700 dark:text-amber-300">{user?.total_stars || 0} 星星</span>
+              <span className="text-sm font-medium text-amber-700 dark:text-amber-300">{levelProgress?.reduce((sum, p) => sum + (p.stars || 0), 0) || 0} 星星</span>
             </div>
           </div>
         </div>
@@ -130,7 +131,7 @@ const Mine: React.FC = () => {
 
           <button
             onClick={() => navigate('/daily-challenge')}
-            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-700/50"
           >
             <div className="size-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
               <span className="material-symbols-outlined text-purple-500">bolt</span>
@@ -138,6 +139,20 @@ const Mine: React.FC = () => {
             <div className="flex-1 text-left">
               <p className="text-sm font-medium text-slate-900 dark:text-white">每日挑战</p>
               <p className="text-xs text-slate-500 dark:text-slate-400">每日答题挑战</p>
+            </div>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </button>
+
+          <button
+            onClick={() => navigate('/settings')}
+            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <div className="size-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+              <span className="material-symbols-outlined text-slate-500">settings</span>
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-medium text-slate-900 dark:text-white">设置</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">主题、偏好设置</p>
             </div>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </button>

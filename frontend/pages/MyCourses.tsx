@@ -1,14 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLevels, useUserProgress } from '../hooks';
+import { useCurrentUser, useLevels, useLevelProgress, useUserProgress } from '../hooks';
 
 const MyCourses: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
   const { data: levels, loading: levelsLoading } = useLevels();
   const { data: progress } = useUserProgress();
+  const { data: levelProgress } = useLevelProgress(user?.id);
 
   const completedCount = progress?.completed_levels || 0;
-  const totalStars = progress?.total_stars || 0;
+  const totalStars = levelProgress?.reduce((sum, p) => sum + (p.stars || 0), 0) || 0;
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark pb-8">

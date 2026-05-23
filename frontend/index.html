@@ -68,6 +68,25 @@
       .ar-glow {
         filter: drop-shadow(0 0 15px rgba(19, 200, 236, 0.3));
       }
+      .learning-card {
+        transition: all 0.3s ease-out;
+      }
+      .learning-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: rgba(19, 236, 91, 0.3);
+        background-color: #f8fafc;
+      }
+      .dark .learning-card:hover {
+        background-color: #1e293b;
+      }
+      .learning-card:hover .learning-icon {
+        transform: scale(1.25) rotate(-8deg);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      .learning-icon {
+        transition: all 0.3s ease-out;
+      }
     </style>
   <script type="importmap">
 {

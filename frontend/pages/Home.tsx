@@ -114,10 +114,10 @@ const Home: React.FC = () => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <button
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
               onClick={() => navigate('/levels')}
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary learning-icon">
                 <span className="material-symbols-outlined text-[24px]">play_circle</span>
               </div>
               <div>
@@ -127,9 +127,9 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/globe')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 learning-icon">
                 <span className="material-symbols-outlined text-[24px]">public</span>
               </div>
               <div>
@@ -139,9 +139,9 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/mistakes')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 learning-icon">
                 <span className="material-symbols-outlined text-[24px]">quiz</span>
               </div>
               <div>
@@ -151,9 +151,9 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/ar')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 learning-icon">
                 <span className="material-symbols-outlined text-[24px]">view_in_ar</span>
               </div>
               <div>
@@ -163,9 +163,9 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/leaderboard')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 learning-icon">
                 <span className="material-symbols-outlined text-[24px]">leaderboard</span>
               </div>
               <div>
@@ -175,9 +175,9 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/daily-challenge')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 group-hover:scale-110 transition-transform">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 learning-icon">
                 <span className="material-symbols-outlined text-[24px]">bolt</span>
               </div>
               <div>
