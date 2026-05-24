@@ -71,6 +71,20 @@
         WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
     </update>
 
+    <select id="findAllOrderByStars" resultType="com.flittly.bankendspringboot.dto.LeaderboardEntry">
+        SELECT
+            id AS userId,
+            name,
+            avatar_url AS avatarUrl,
+            level,
+            total_stars AS totalStars,
+            ROW_NUMBER() OVER (ORDER BY total_stars DESC) AS `rank`
+        FROM users
+        WHERE is_active = true
+        ORDER BY total_stars DESC
+        LIMIT 100
+    </select>
+
 </mapper>
 
 

@@ -593,6 +593,24 @@ export const communityAPI = {
         fetchAPI<PostItem[]>(`/api/favorites?page=${page}&size=${size}`),
 };
 
+// ============ Ranking API ============
+
+export interface RankUser {
+    userId: string;
+    name: string;
+    avatarUrl?: string;
+    level: string;
+    totalStars: number;
+    rank: number;
+}
+
+export const rankingAPI = {
+    getLeaderboard: (currentUserId?: string) => {
+        const params = currentUserId ? `?current_user_id=${currentUserId}` : '';
+        return fetchAPI<RankUser[]>(`/api/users/leaderboard${params}`);
+    },
+};
+
 // Export all APIs
 export const api = {
     auth: authAPI,
@@ -604,6 +622,7 @@ export const api = {
     arLandforms: arLandformsAPI,
     questions: questionsAPI,
     community: communityAPI,
+    ranking: rankingAPI,
 };
 
 export default api;

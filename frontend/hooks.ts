@@ -14,6 +14,7 @@ import api, {
     GeographicFeature,
     ARLandform,
     UserAuth,
+    RankUser,
     getCurrentUser,
 } from './api';
 
@@ -126,6 +127,16 @@ export function useUserLevelProgress(userId?: string) {
 }
 
 export const useLevelProgress = useUserLevelProgress;
+
+/**
+ * Hook for fetching leaderboard data
+ */
+export function useLeaderboard(currentUserId?: string) {
+    return useAsyncData<RankUser[]>(
+        () => api.ranking.getLeaderboard(currentUserId),
+        [currentUserId]
+    );
+}
 
 /**
  * Hook for fetching mistakes with filters

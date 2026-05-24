@@ -290,7 +290,10 @@ const Levels: React.FC = () => {
           <span className="material-symbols-outlined icon-filled">map</span>
           <span className="text-[10px] font-medium">路径</span>
         </button>
-        <button className="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors">
+        <button
+          onClick={() => navigate('/leaderboard')}
+          className="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+        >
           <span className="material-symbols-outlined">leaderboard</span>
           <span className="text-[10px] font-medium">排行</span>
         </button>

@@ -5,8 +5,10 @@ import com.flittly.bankendspringboot.dto.LevelProgressUpdateRequest;
 import com.flittly.bankendspringboot.entity.Level;
 import com.flittly.bankendspringboot.entity.UserLevelProgress;
 import com.flittly.bankendspringboot.entity.enums.ProgressStatus;
+import com.flittly.bankendspringboot.entity.enums.UserLevel;
 import com.flittly.bankendspringboot.mapper.LevelMapper;
 import com.flittly.bankendspringboot.mapper.UserLevelProgressMapper;
+import com.flittly.bankendspringboot.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class LevelService {
 
     private final LevelMapper levelMapper;
     private final UserLevelProgressMapper progressMapper;
+    private final UserMapper userMapper;
 
     public List<Level> getAllLevels() {
         return levelMapper.findAll();
@@ -82,6 +85,31 @@ public class LevelService {
             progressMapper.update(progress);
         }
 
+        recalculateUserStars(userId);
+
         return progress;
+    }
+
+    private void recalculateUserStars(UUID userId) {
+        List<UserLevelProgress> allProgress = progressMapper.findByUserId(userId);
+        int totalStars = allProgress.stream()
+                .filter(p -> p.getStars() != null)
+                .mapToInt(UserLevelProgress::getStars)
+                .sum();
+
+        UserLevel userLevel;
+        if (totalStars < 100) {
+            userLevel = UserLevel.BEGINNER;
+        } else if (totalStars < 500) {
+            userLevel = UserLevel.LEARNER;
+        } else if (totalStars < 1000) {
+            userLevel = UserLevel.SCHOLAR;
+        } else if (totalStars < 2000) {
+            userLevel = UserLevel.EXPLORER;
+        } else {
+            userLevel = UserLevel.MASTER;
+        }
+
+        userMapper.updateStarsAndLevel(userId, totalStars, userLevel.name());
     }
 }

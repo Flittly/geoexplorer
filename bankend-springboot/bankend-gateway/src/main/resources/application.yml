@@ -120,6 +120,8 @@ gateway:
       - /api/questions/**
       # 社区已审核帖子（公开浏览）
       - /api/posts/approved/**
+      # 排行榜（公开）
+      - /api/users/leaderboard
       # 地理要素和趣闻（公开）
       - /api/geo-features/**
       - /api/ar-landforms/**

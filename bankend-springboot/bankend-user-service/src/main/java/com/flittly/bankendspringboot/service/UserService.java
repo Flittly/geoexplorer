@@ -1,5 +1,6 @@
 package com.flittly.bankendspringboot.service;
 
+import com.flittly.bankendspringboot.dto.LeaderboardEntry;
 import com.flittly.bankendspringboot.dto.UserCreateRequest;
 import com.flittly.bankendspringboot.dto.UserProgressResponse;
 import com.flittly.bankendspringboot.dto.UserUpdateRequest;
@@ -88,5 +89,30 @@ public class UserService {
                 .completedLevels(completedLevels)
                 .currentLevelId(currentLevelId)
                 .build();
+    }
+
+    public List<LeaderboardEntry> getLeaderboard(UUID currentUserId) {
+        List<LeaderboardEntry> entries = userMapper.findAllOrderByStars();
+        if (currentUserId != null) {
+            boolean found = entries.stream().anyMatch(e -> e.getUserId().equals(currentUserId));
+            if (!found) {
+                User user = userMapper.findById(currentUserId);
+                if (user != null) {
+                    long higherCount = userMapper.findAllOrderByStars().stream()
+                            .filter(e -> e.getTotalStars() > user.getTotalStars())
+                            .count();
+                    LeaderboardEntry current = LeaderboardEntry.builder()
+                            .userId(user.getId())
+                            .name(user.getName())
+                            .avatarUrl(user.getAvatarUrl())
+                            .level(user.getLevel() != null ? user.getLevel().name() : "BEGINNER")
+                            .totalStars(user.getTotalStars())
+                            .rank((int) higherCount + 1)
+                            .build();
+                    entries.add(current);
+                }
+            }
+        }
+        return entries;
     }
 }

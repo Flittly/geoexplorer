@@ -1,5 +1,6 @@
 package com.flittly.bankendspringboot.controller;
 
+import com.flittly.bankendspringboot.dto.LeaderboardEntry;
 import com.flittly.bankendspringboot.dto.UserCreateRequest;
 import com.flittly.bankendspringboot.dto.UserProgressResponse;
 import com.flittly.bankendspringboot.dto.UserUpdateRequest;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -48,5 +50,11 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<List<LeaderboardEntry>> getLeaderboard(
+            @RequestParam(value = "current_user_id", required = false) UUID currentUserId) {
+        return ResponseEntity.ok(userService.getLeaderboard(currentUserId));
     }
 }
