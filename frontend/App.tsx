@@ -18,6 +18,7 @@ import TriviaDetail from './pages/TriviaDetail';
 import Mine from './pages/Mine';
 import MyCourses from './pages/MyCourses';
 import Settings from './pages/Settings';
+import ModuleManage from './pages/ModuleManage';
 import Community from './pages/Community';
 import PostDetail from './pages/PostDetail';
 import CreatePost from './pages/CreatePost';
@@ -38,7 +39,7 @@ const PostManagement = lazy(() => import('../admin/src/pages/PostManagement').th
 const Layout = ({ children }: { children?: React.ReactNode }) => {
   const location = useLocation();
   // Don't show standard nav on immersive pages like Globe or AR, and auth pages, and admin pages
-  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/settings', '/community/create', '/micro-course'].includes(location.pathname) ||
+  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/settings', '/module-manage', '/community/create', '/micro-course'].includes(location.pathname) ||
                   location.pathname.startsWith('/admin') ||
                   location.pathname.startsWith('/level/') ||
                   location.pathname.startsWith('/quiz/') ||
@@ -88,6 +89,7 @@ export default function App() {
           <Route path="/mine" element={<Mine />} />
           <Route path="/my-courses" element={<MyCourses />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/module-manage" element={<ModuleManage />} />
           <Route path="/community" element={<Community />} />
           <Route path="/community/create" element={<CreatePost />} />
           <Route path="/community/:id" element={<PostDetail />} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTodayTrivia, useUserProgress, useCurrentUser } from '../hooks';
+import { getEnabledModules } from '../utils/modules';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -110,81 +111,42 @@ const Home: React.FC = () => {
         <section>
           <div className="flex items-center justify-between mb-3 px-1">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">学习模块</h2>
-            <button className="text-sm font-semibold text-primary hover:underline">查看全部</button>
+            <button
+              onClick={() => navigate('/module-manage')}
+              className="text-sm font-semibold text-primary hover:underline"
+            >查看全部</button>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <button
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-              onClick={() => navigate('/micro-course')}
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary learning-icon">
-                <span className="material-symbols-outlined text-[24px]">play_circle</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">微课</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">知识点精讲视频</p>
-              </div>
-            </button>
-            <button
-              onClick={() => navigate('/globe')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 learning-icon">
-                <span className="material-symbols-outlined text-[24px]">public</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">地图库</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">探索全球地理</p>
-              </div>
-            </button>
-            <button
-              onClick={() => navigate('/mistakes')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 learning-icon">
-                <span className="material-symbols-outlined text-[24px]">quiz</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">题库</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">巩固练习测试</p>
-              </div>
-            </button>
-            <button
-              onClick={() => navigate('/ar')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 learning-icon">
-                <span className="material-symbols-outlined text-[24px]">view_in_ar</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">AR探索</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">沉浸式观察体验</p>
-              </div>
-            </button>
-            <button
-              onClick={() => navigate('/leaderboard')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 learning-icon">
-                <span className="material-symbols-outlined text-[24px]">leaderboard</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">排行榜</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">看看你的排名</p>
-              </div>
-            </button>
-            <button
-              onClick={() => navigate('/daily-challenge')}
-              className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-            >
-              <div className="flex items-center justify-center size-10 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 learning-icon">
-                <span className="material-symbols-outlined text-[24px]">bolt</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">每日挑战</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">赢取额外奖励</p>
-              </div>
-            </button>
+            {(() => {
+              const modules = getEnabledModules()
+              const colorMap: Record<string, { bg: string; darkBg: string; text: string }> = {
+                blue: { bg: 'bg-blue-50', darkBg: 'dark:bg-blue-900/20', text: 'text-primary' },
+                emerald: { bg: 'bg-emerald-50', darkBg: 'dark:bg-emerald-900/20', text: 'text-emerald-600' },
+                orange: { bg: 'bg-orange-50', darkBg: 'dark:bg-orange-900/20', text: 'text-orange-600' },
+                purple: { bg: 'bg-purple-50', darkBg: 'dark:bg-purple-900/20', text: 'text-purple-600' },
+                yellow: { bg: 'bg-yellow-50', darkBg: 'dark:bg-yellow-900/20', text: 'text-yellow-600' },
+                red: { bg: 'bg-red-50', darkBg: 'dark:bg-red-900/20', text: 'text-red-600' },
+                indigo: { bg: 'bg-indigo-50', darkBg: 'dark:bg-indigo-900/20', text: 'text-indigo-600' },
+              }
+              return modules.map(mod => {
+                const c = colorMap[mod.color] || colorMap.blue
+                return (
+                  <button
+                    key={mod.id}
+                    onClick={() => navigate(mod.route)}
+                    className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
+                  >
+                    <div className={`flex items-center justify-center size-10 rounded-lg ${c.bg} ${c.darkBg} ${c.text} learning-icon`}>
+                      <span className="material-symbols-outlined text-[24px]">{mod.icon}</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 dark:text-white leading-tight">{mod.title}</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{mod.desc}</p>
+                    </div>
+                  </button>
+                )
+              })
+            })()}
           </div>
         </section>
 
