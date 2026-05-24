@@ -115,7 +115,7 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               className="flex flex-col items-start gap-3 rounded-xl bg-white dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700/50 learning-card cursor-pointer text-left"
-              onClick={() => navigate('/levels')}
+              onClick={() => navigate('/micro-course')}
             >
               <div className="flex items-center justify-center size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary learning-icon">
                 <span className="material-symbols-outlined text-[24px]">play_circle</span>
