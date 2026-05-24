@@ -282,32 +282,35 @@ const Levels: React.FC = () => {
         </button>
       </div>
 
-      <nav className="fixed bottom-0 w-full bg-emerald-100/95 dark:bg-[#102216]/95 backdrop-blur border-t border-emerald-200/50 dark:border-white/5 pb-4 pt-2 px-6 flex justify-between items-center z-40">
-        <button
-          onClick={() => navigate('/levels')}
-          className="flex flex-col items-center gap-1 p-2 text-emerald-600 dark:text-primary-green"
-        >
-          <span className="material-symbols-outlined icon-filled">map</span>
-          <span className="text-[10px] font-medium">路径</span>
-        </button>
-        <button
-          onClick={() => navigate('/leaderboard')}
-          className="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined">leaderboard</span>
-          <span className="text-[10px] font-medium">排行</span>
-        </button>
-        <button
-          onClick={() => navigate('/')}
-          className="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined">book_2</span>
-          <span className="text-[10px] font-medium">学习</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors">
-          <span className="material-symbols-outlined">person</span>
-          <span className="text-[10px] font-medium">我的</span>
-        </button>
+      <nav className="fixed bottom-0 left-0 right-0 bg-emerald-100/95 dark:bg-[#102216]/95 backdrop-blur border-t border-emerald-200/50 dark:border-white/5 pb-safe pt-2 px-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
+        <div className="flex items-center justify-between max-w-md mx-auto h-14">
+          <button
+            onClick={() => navigate('/levels')}
+            className="flex flex-col items-center justify-center gap-1 w-16 text-emerald-600 dark:text-primary-green"
+          >
+            <span className="material-symbols-outlined icon-filled text-[26px]">map</span>
+            <span className="text-[10px] font-bold">路径</span>
+          </button>
+          <button
+            onClick={() => navigate('/leaderboard')}
+            className="flex flex-col items-center justify-center gap-1 w-16 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+          >
+            <span className="material-symbols-outlined text-[26px]">leaderboard</span>
+            <span className="text-[10px] font-medium">排行</span>
+          </button>
+          <button
+            onClick={() => navigate('/')}
+            className="flex flex-col items-center justify-center gap-1 w-16 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+          >
+            <span className="material-symbols-outlined text-[26px]">book_2</span>
+            <span className="text-[10px] font-medium">学习</span>
+          </button>
+          <button className="flex flex-col items-center justify-center gap-1 w-16 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors">
+            <span className="material-symbols-outlined text-[26px]">person</span>
+            <span className="text-[10px] font-medium">我的</span>
+          </button>
+        </div>
+        <div className="h-4 w-full"></div>
       </nav>
     </div>
   );
