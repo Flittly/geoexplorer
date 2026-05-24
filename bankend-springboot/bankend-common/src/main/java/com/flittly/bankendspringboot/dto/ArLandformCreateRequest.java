@@ -9,4 +9,12 @@ public class ArLandformCreateRequest {
     private String type;
     private String imageUrl;
     private Double elevation;
+    private Integer noiseSeed;
+    private String noiseType;
+    private Double scale;
+    private Double amplitude;
+    private Integer octaves;
+    private Double persistence;
+    private String knowledgeContent;
+    private String labels;
 }
