@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.LevelMapper">
+
+    <resultMap id="LevelResult" type="com.flittly.bankendspringboot.entity.Level">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="orderIndex" column="order_index"/>
+        <result property="unlockRequirement" column="unlock_requirement"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="LevelResult">
+        SELECT * FROM levels WHERE is_active = true ORDER BY order_index ASC
+    </select>
+
+    <select id="findById" resultMap="LevelResult">
+        SELECT * FROM levels WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO levels (id, name, description, order_index, unlock_requirement, image_url, is_active, created_at, updated_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{orderIndex}, #{unlockRequirement}, #{imageUrl}, #{isActive}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update">
+        UPDATE levels
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="orderIndex != null">order_index = #{orderIndex},</if>
+            <if test="unlockRequirement != null">unlock_requirement = #{unlockRequirement},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+</mapper>
+
+
+
