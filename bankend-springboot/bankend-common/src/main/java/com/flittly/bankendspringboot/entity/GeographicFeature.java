@@ -16,6 +16,12 @@ public class GeographicFeature {
     private String region;
     private String imageUrl;
     private Map<String, Object> stats;
+    private String gradeLevel;
+    private String textbook;
+    private String sourceType;
+    private String category;
+    private Integer minZoom;
+    private UUID levelId;
     private Boolean isActive;
     private LocalDateTime createdAt;
 }

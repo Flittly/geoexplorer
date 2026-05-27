@@ -16,8 +16,15 @@ public class GeoFeatureService {
 
     private final GeographicFeatureMapper geoFeatureMapper;
 
-    public List<GeographicFeature> getFeatures(String featureType, String region, int limit, int offset) {
-        return geoFeatureMapper.findByFilters(featureType, region, limit, offset);
+    public List<GeographicFeature> getFeatures(String featureType, String region,
+                                                String gradeLevel, String textbook,
+                                                String sourceType, String category,
+                                                int limit, int offset) {
+        return geoFeatureMapper.findByFilters(featureType, region, gradeLevel, textbook, sourceType, category, limit, offset);
+    }
+
+    public List<GeographicFeature> getAllWithCoordinates() {
+        return geoFeatureMapper.findAllWithCoordinates();
     }
 
     public GeographicFeature getFeatureById(UUID featureId) {
@@ -35,6 +42,12 @@ public class GeoFeatureService {
         feature.setRegion(request.getRegion());
         feature.setImageUrl(request.getImageUrl());
         feature.setStats(request.getStats());
+        feature.setGradeLevel(request.getGradeLevel());
+        feature.setTextbook(request.getTextbook());
+        feature.setSourceType(request.getSourceType());
+        feature.setCategory(request.getCategory());
+        feature.setMinZoom(request.getMinZoom());
+        feature.setLevelId(request.getLevelId());
         feature.setIsActive(true);
         feature.setCreatedAt(LocalDateTime.now());
 

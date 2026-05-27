@@ -21,9 +21,18 @@ public class GeoFeatureController {
     public ResponseEntity<List<GeographicFeature>> getFeatures(
             @RequestParam(required = false) String featureType,
             @RequestParam(required = false) String region,
+            @RequestParam(required = false) String gradeLevel,
+            @RequestParam(required = false) String textbook,
+            @RequestParam(required = false) String sourceType,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "50") int limit,
             @RequestParam(defaultValue = "0") int offset) {
-        return ResponseEntity.ok(geoFeatureService.getFeatures(featureType, region, limit, offset));
+        return ResponseEntity.ok(geoFeatureService.getFeatures(featureType, region, gradeLevel, textbook, sourceType, category, limit, offset));
+    }
+
+    @GetMapping("/map-markers")
+    public ResponseEntity<List<GeographicFeature>> getMapMarkers() {
+        return ResponseEntity.ok(geoFeatureService.getAllWithCoordinates());
     }
 
     @GetMapping("/{feature_id}")

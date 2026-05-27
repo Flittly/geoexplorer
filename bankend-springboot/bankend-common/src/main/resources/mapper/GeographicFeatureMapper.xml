@@ -11,6 +11,12 @@
         <result property="longitude" column="longitude"/>
         <result property="region" column="region"/>
         <result property="imageUrl" column="image_url"/>
+        <result property="gradeLevel" column="grade_level"/>
+        <result property="textbook" column="textbook"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="category" column="category"/>
+        <result property="minZoom" column="min_zoom"/>
+        <result property="levelId" column="level_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="isActive" column="is_active"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
@@ -25,9 +31,18 @@
             is_active = true
             <if test="featureType != null and featureType != ''">AND feature_type = #{featureType}</if>
             <if test="region != null and region != ''">AND region = #{region}</if>
+            <if test="gradeLevel != null and gradeLevel != ''">AND grade_level = #{gradeLevel}</if>
+            <if test="textbook != null and textbook != ''">AND textbook = #{textbook}</if>
+            <if test="sourceType != null and sourceType != ''">AND source_type = #{sourceType}</if>
+            <if test="category != null and category != ''">AND category = #{category}</if>
         </where>
         ORDER BY created_at DESC
         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findAllWithCoordinates" resultMap="GeoFeatureWithStatsResult">
+        SELECT * FROM geographic_features
+        WHERE is_active = true AND latitude IS NOT NULL AND longitude IS NOT NULL
     </select>
 
     <select id="findById" resultMap="GeoFeatureWithStatsResult">
@@ -35,8 +50,8 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="false">
-        INSERT INTO geographic_features (id, name, description, feature_type, latitude, longitude, region, image_url, stats, is_active, created_at)
-        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{featureType}, #{latitude}, #{longitude}, #{region}, #{imageUrl}, #{stats, typeHandler=com.flittly.bankendspringboot.config.JsonMapTypeHandler}, #{isActive}, #{createdAt})
+        INSERT INTO geographic_features (id, name, description, feature_type, latitude, longitude, region, image_url, stats, grade_level, textbook, source_type, category, min_zoom, level_id, is_active, created_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{name}, #{description}, #{featureType}, #{latitude}, #{longitude}, #{region}, #{imageUrl}, #{stats, typeHandler=com.flittly.bankendspringboot.config.JsonMapTypeHandler}, #{gradeLevel}, #{textbook}, #{sourceType}, #{category}, #{minZoom}, #{levelId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{isActive}, #{createdAt})
     </insert>
 
     <select id="search" resultMap="GeoFeatureWithStatsResult">

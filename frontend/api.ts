@@ -416,6 +416,13 @@ export interface GeographicFeature {
     region?: string;
     image_url?: string;
     stats?: Record<string, unknown>;
+    grade_level?: string;
+    textbook?: string;
+    source_type?: string;
+    category?: string;
+    min_zoom?: number;
+    level_id?: string;
+    is_active?: boolean;
     created_at: string;
 }
 
@@ -423,17 +430,28 @@ export const geoFeaturesAPI = {
     getFeatures: (params?: {
         featureType?: string;
         region?: string;
+        gradeLevel?: string;
+        textbook?: string;
+        sourceType?: string;
+        category?: string;
         limit?: number;
         offset?: number;
     }) => {
         const searchParams = new URLSearchParams();
         if (params?.featureType) searchParams.append('feature_type', params.featureType);
         if (params?.region) searchParams.append('region', params.region);
+        if (params?.gradeLevel) searchParams.append('grade_level', params.gradeLevel);
+        if (params?.textbook) searchParams.append('textbook', params.textbook);
+        if (params?.sourceType) searchParams.append('source_type', params.sourceType);
+        if (params?.category) searchParams.append('category', params.category);
         if (params?.limit) searchParams.append('limit', params.limit.toString());
         if (params?.offset) searchParams.append('offset', params.offset.toString());
 
         return fetchAPI<GeographicFeature[]>(`/api/geo-features?${searchParams.toString()}`);
     },
+
+    getMapMarkers: () =>
+        fetchAPI<GeographicFeature[]>('/api/geo-features/map-markers'),
 
     getFeature: (featureId: string) =>
         fetchAPI<GeographicFeature>(`/api/geo-features/${featureId}`),

@@ -163,10 +163,32 @@ export function useMistakes(params?: {
 export function useGeoFeatures(params?: {
     featureType?: string;
     region?: string;
+    gradeLevel?: string;
+    textbook?: string;
+    sourceType?: string;
+    category?: string;
 }) {
     return useAsyncData<GeographicFeature[]>(
-        () => api.geoFeatures.getFeatures(params),
-        [params?.featureType, params?.region]
+        () => api.geoFeatures.getFeatures({
+            featureType: params?.featureType,
+            region: params?.region,
+            gradeLevel: params?.gradeLevel,
+            textbook: params?.textbook,
+            sourceType: params?.sourceType,
+            category: params?.category,
+            limit: 50,
+        }),
+        [params?.featureType, params?.region, params?.gradeLevel, params?.textbook, params?.sourceType, params?.category]
+    );
+}
+
+/**
+ * Hook for fetching all map markers (with coordinates)
+ */
+export function useMapMarkers() {
+    return useAsyncData<GeographicFeature[]>(
+        () => api.geoFeatures.getMapMarkers(),
+        []
     );
 }
 
