@@ -34,7 +34,12 @@
         <dependencies>
             <dependency>
                 <groupId>com.flittly</groupId>
-                <artifactId>bankend-common</artifactId>
+                <artifactId>bankend-common-frame</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.flittly</groupId>
+                <artifactId>bankend-common-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
