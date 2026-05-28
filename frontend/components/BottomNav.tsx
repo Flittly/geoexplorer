@@ -28,11 +28,19 @@ const BottomNav: React.FC = () => {
         </button>
 
         <button
+          onClick={() => navigate('/course-shop')}
+          className={`flex flex-col items-center justify-center gap-1 w-16 transition-colors ${isActive('/course-shop') || isActive('/my-courses') ? 'text-primary' : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
+        >
+          <span className={`material-symbols-outlined text-[26px] ${isActive('/course-shop') || isActive('/my-courses') ? 'icon-filled' : ''}`}>play_circle</span>
+          <span className={`text-[10px] ${isActive('/course-shop') || isActive('/my-courses') ? 'font-bold' : 'font-medium'}`}>课程</span>
+        </button>
+
+        <button
           onClick={() => navigate('/levels')}
           className={`flex flex-col items-center justify-center gap-1 w-16 transition-colors ${isActive('/levels') ? 'text-primary' : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
         >
           <span className={`material-symbols-outlined text-[26px] ${isActive('/levels') ? 'icon-filled' : ''}`}>school</span>
-          <span className={`text-[10px] ${isActive('/levels') ? 'font-bold' : 'font-medium'}`}>课程</span>
+          <span className={`text-[10px] ${isActive('/levels') ? 'font-bold' : 'font-medium'}`}>闯关</span>
         </button>
 
         <button

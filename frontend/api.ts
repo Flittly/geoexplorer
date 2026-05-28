@@ -629,6 +629,187 @@ export const rankingAPI = {
     },
 };
 
+// ============ Course Shop API ============
+
+export interface CoursePackage {
+    id: string;
+    title: string;
+    description?: string;
+    cover_url?: string;
+    category?: string;
+    original_price: number;
+    selling_price: number;
+    expire_days: number;
+    course_count: number;
+    is_featured: boolean;
+    created_at: string;
+}
+
+export interface Course {
+    id: string;
+    package_id: string;
+    title: string;
+    description?: string;
+    video_url: string;
+    cover_url?: string;
+    duration?: string;
+    order_index: number;
+    is_active: boolean;
+}
+
+export interface OrderItem {
+    id: string;
+    package_id: string;
+    package_title?: string;
+    package_cover_url?: string;
+    price: number;
+}
+
+export interface Order {
+    id: string;
+    order_no: string;
+    total_amount: number;
+    status: 'PENDING' | 'PAID' | 'CANCELLED' | 'REFUNDED';
+    payment_method?: string;
+    payment_time?: string;
+    expire_time?: string;
+    created_at: string;
+    items: OrderItem[];
+}
+
+export interface CourseProgressItem {
+    course_id: string;
+    title: string;
+    duration?: string;
+    status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
+    progress_percent: number;
+    last_position: number;
+}
+
+export interface MyCourse {
+    package_id: string;
+    title: string;
+    cover_url?: string;
+    course_count: number;
+    completed_count: number;
+    progress_percent: number;
+    purchased_at: string;
+    expire_at: string;
+    courses: CourseProgressItem[];
+}
+
+export interface PageResult<T> {
+    data: T[];
+    total: number;
+    limit: number;
+    offset: number;
+}
+
+export const courseShopAPI = {
+    getPackages: (params?: { category?: string; keyword?: string; limit?: number; offset?: number }) => {
+        const sp = new URLSearchParams();
+        if (params?.category) sp.append('category', params.category);
+        if (params?.keyword) sp.append('keyword', params.keyword);
+        if (params?.limit) sp.append('limit', params.limit.toString());
+        if (params?.offset) sp.append('offset', params.offset.toString());
+        return fetchAPI<PageResult<CoursePackage>>(`/api/course-packages?${sp.toString()}`);
+    },
+
+    getFeatured: () =>
+        fetchAPI<CoursePackage[]>('/api/course-packages/featured'),
+
+    getPackage: (id: string) =>
+        fetchAPI<CoursePackage>(`/api/course-packages/${id}`),
+
+    getPackageCourses: (packageId: string) =>
+        fetchAPI<Course[]>(`/api/course-packages/${packageId}/courses`),
+
+    getCourse: (id: string) =>
+        fetchAPI<Course>(`/api/courses/${id}`),
+};
+
+export const orderAPI = {
+    createOrder: (packageIds: string[]) =>
+        fetchAPI<Order>('/api/orders', {
+            method: 'POST',
+            body: JSON.stringify({ package_ids: packageIds }),
+        }),
+
+    getMyOrders: (status?: string, limit = 10, offset = 0) => {
+        const sp = new URLSearchParams();
+        if (status) sp.append('status', status);
+        sp.append('limit', limit.toString());
+        sp.append('offset', offset.toString());
+        return fetchAPI<Order[]>(`/api/orders?${sp.toString()}`);
+    },
+
+    getOrder: (id: string) =>
+        fetchAPI<Order>(`/api/orders/${id}`),
+
+    payOrder: (id: string, paymentMethod: string) =>
+        fetchAPI<{ message: string; success: boolean }>(`/api/orders/${id}/pay`, {
+            method: 'POST',
+            body: JSON.stringify({ payment_method: paymentMethod }),
+        }),
+
+    cancelOrder: (id: string) =>
+        fetchAPI<{ message: string; success: boolean }>(`/api/orders/${id}/cancel`, {
+            method: 'POST',
+        }),
+};
+
+export const myCoursesAPI = {
+    getMyCourses: () =>
+        fetchAPI<MyCourse[]>('/api/my-courses'),
+
+    updateProgress: (courseId: string, progressPercent: number, lastPosition: number) =>
+        fetchAPI<{ message: string }>('/api/my-courses/progress', {
+            method: 'POST',
+            body: JSON.stringify({ course_id: courseId, progress_percent: progressPercent, last_position: lastPosition }),
+        }),
+
+    completeCourse: (courseId: string) =>
+        fetchAPI<{ message: string }>(`/api/my-courses/complete?courseId=${courseId}`, {
+            method: 'POST',
+        }),
+};
+
+export const adminCourseAPI = {
+    createPackage: (data: Partial<CoursePackage>) =>
+        fetchAPI<CoursePackage>('/api/admin/courses/packages', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
+    updatePackage: (id: string, data: Partial<CoursePackage>) =>
+        fetchAPI<CoursePackage>(`/api/admin/courses/packages/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        }),
+
+    deletePackage: (id: string) =>
+        fetchAPI<{ message: string }>(`/api/admin/courses/packages/${id}`, {
+            method: 'DELETE',
+        }),
+
+    createCourse: (data: Partial<Course>) =>
+        fetchAPI<Course>('/api/admin/courses', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
+    updateCourse: (id: string, data: Partial<Course>) =>
+        fetchAPI<Course>(`/api/admin/courses/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        }),
+
+    deleteCourse: (id: string) =>
+        fetchAPI<{ message: string }>(`/api/admin/courses/${id}`, {
+            method: 'DELETE',
+        }),
+};
+
 // Export all APIs
 export const api = {
     auth: authAPI,
@@ -641,6 +822,10 @@ export const api = {
     questions: questionsAPI,
     community: communityAPI,
     ranking: rankingAPI,
+    courseShop: courseShopAPI,
+    orders: orderAPI,
+    myCourses: myCoursesAPI,
+    adminCourses: adminCourseAPI,
 };
 
 export default api;

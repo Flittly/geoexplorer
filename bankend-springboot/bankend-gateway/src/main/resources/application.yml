@@ -62,6 +62,26 @@ spring:
               uri: http://localhost:8002
               predicates:
                 - Path=/api/users/**
+            - id: user-course-packages
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/course-packages/**
+            - id: user-courses
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/courses/**
+            - id: user-orders
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/orders/**
+            - id: user-my-courses
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/my-courses/**
+            - id: user-admin-courses
+              uri: http://localhost:8002
+              predicates:
+                - Path=/api/admin/courses/**
 
             # 3. 内容服务 (8003) — 每个 Path 独立路由
             - id: content-posts
@@ -126,6 +146,9 @@ gateway:
       - /api/geo-features/**
       - /api/ar-landforms/**
       - /api/trivia/**
+      # 课程商城（公开浏览）
+      - /api/course-packages/**
+      - /api/courses/**
       # 健康检查
       - /health
       - /actuator/**

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.UserCourseProgressMapper">
+
+    <resultMap id="ProgressResult" type="com.flittly.bankendspringboot.entity.UserCourseProgress">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="courseId" column="course_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="packageId" column="package_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="status" column="status"/>
+        <result property="progressPercent" column="progress_percent"/>
+        <result property="lastPosition" column="last_position"/>
+        <result property="completedAt" column="completed_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByUserAndPackage" resultMap="ProgressResult">
+        SELECT * FROM user_course_progress WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND package_id = #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <select id="findByUserAndCourse" resultMap="ProgressResult">
+        SELECT * FROM user_course_progress WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND course_id = #{courseId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO user_course_progress (id, user_id, course_id, package_id, status, progress_percent, last_position, created_at, updated_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{courseId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{status}, #{progressPercent}, #{lastPosition}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateProgress">
+        UPDATE user_course_progress SET progress_percent = #{progressPercent}, last_position = #{lastPosition},
+            status = CASE WHEN #{progressPercent} > 0 AND status = 'NOT_STARTED' THEN 'IN_PROGRESS' ELSE status END,
+            updated_at = NOW()
+        WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND course_id = #{courseId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <update id="markCompleted">
+        UPDATE user_course_progress SET status = 'COMPLETED', progress_percent = 100, completed_at = NOW(), updated_at = NOW()
+        WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND course_id = #{courseId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <select id="countCompletedByPackage" resultType="int">
+        SELECT COUNT(*) FROM user_course_progress WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND package_id = #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND status = 'COMPLETED'
+    </select>
+
+</mapper>

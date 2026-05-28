@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.UserPurchaseMapper">
+
+    <resultMap id="UserPurchaseResult" type="com.flittly.bankendspringboot.entity.UserPurchase">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="userId" column="user_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="packageId" column="package_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="orderId" column="order_id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="purchasedAt" column="purchased_at"/>
+        <result property="expireAt" column="expire_at"/>
+        <result property="isExpired" column="is_expired"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="UserPurchaseResult">
+        SELECT * FROM user_purchases WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+        <if test="isExpired != null">AND is_expired = #{isExpired}</if>
+        ORDER BY purchased_at DESC
+    </select>
+
+    <select id="findByUserAndPackage" resultMap="UserPurchaseResult">
+        SELECT * FROM user_purchases WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND package_id = #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO user_purchases (id, user_id, package_id, order_id, purchased_at, expire_at, is_expired)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{orderId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{purchasedAt}, #{expireAt}, #{isExpired})
+    </insert>
+
+    <update id="expireOldPurchases">
+        UPDATE user_purchases SET is_expired = TRUE WHERE is_expired = FALSE AND expire_at &lt; NOW()
+    </update>
+
+    <select id="existsByUserAndPackage" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM user_purchases WHERE user_id = #{userId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND package_id = #{packageId, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler} AND is_expired = FALSE
+    </select>
+
+</mapper>

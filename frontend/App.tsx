@@ -22,6 +22,11 @@ import ModuleManage from './pages/ModuleManage';
 import Community from './pages/Community';
 import PostDetail from './pages/PostDetail';
 import CreatePost from './pages/CreatePost';
+import CourseShop from './pages/CourseShop';
+import CourseDetail from './pages/CourseDetail';
+import Cart from './pages/Cart';
+import Orders from './pages/Orders';
+import CoursePlayer from './pages/CoursePlayer';
 import BottomNav from './components/BottomNav';
 
 // Lazy load admin components
@@ -39,13 +44,15 @@ const PostManagement = lazy(() => import('../admin/src/pages/PostManagement').th
 const Layout = ({ children }: { children?: React.ReactNode }) => {
   const location = useLocation();
   // Don't show standard nav on immersive pages like Globe or AR, and auth pages, and admin pages
-  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/settings', '/module-manage', '/community/create', '/micro-course'].includes(location.pathname) ||
+  const hideNav = ['/globe', '/ar', '/levels', '/login', '/register', '/profile', '/leaderboard', '/daily-challenge', '/mine', '/my-courses', '/settings', '/module-manage', '/community/create', '/micro-course', '/cart', '/orders'].includes(location.pathname) ||
                   location.pathname.startsWith('/admin') ||
                   location.pathname.startsWith('/level/') ||
                   location.pathname.startsWith('/quiz/') ||
                   location.pathname.startsWith('/mistake/') ||
                   location.pathname.startsWith('/trivia/') ||
-                  location.pathname.startsWith('/community/');
+                  location.pathname.startsWith('/community/') ||
+                  location.pathname.startsWith('/course-shop/') ||
+                  location.pathname.startsWith('/my-courses/');
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -93,6 +100,12 @@ export default function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/community/create" element={<CreatePost />} />
           <Route path="/community/:id" element={<PostDetail />} />
+          <Route path="/course-shop" element={<CourseShop />} />
+          <Route path="/course-shop/:id" element={<CourseDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<Orders />} />
+          <Route path="/my-courses/:id" element={<CoursePlayer />} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLayout><AdminLogin /></AdminLayout>} />

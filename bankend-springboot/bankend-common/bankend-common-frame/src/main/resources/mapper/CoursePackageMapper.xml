@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.bankendspringboot.mapper.CoursePackageMapper">
+
+    <resultMap id="CoursePackageResult" type="com.flittly.bankendspringboot.entity.CoursePackage">
+        <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="coverUrl" column="cover_url"/>
+        <result property="category" column="category"/>
+        <result property="originalPrice" column="original_price"/>
+        <result property="sellingPrice" column="selling_price"/>
+        <result property="expireDays" column="expire_days"/>
+        <result property="courseCount" column="course_count"/>
+        <result property="isActive" column="is_active"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByFilters" resultMap="CoursePackageResult">
+        SELECT * FROM course_packages
+        <where>
+            is_active = true
+            <if test="category != null and category != ''">AND category = #{category}</if>
+            <if test="keyword != null and keyword != ''">AND (title LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))</if>
+            <if test="isActive != null">AND is_active = #{isActive}</if>
+            <if test="isFeatured != null">AND is_featured = #{isFeatured}</if>
+        </where>
+        ORDER BY is_featured DESC, created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByFilters" resultType="int">
+        SELECT COUNT(*) FROM course_packages
+        <where>
+            is_active = true
+            <if test="category != null and category != ''">AND category = #{category}</if>
+            <if test="keyword != null and keyword != ''">AND (title LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))</if>
+            <if test="isActive != null">AND is_active = #{isActive}</if>
+            <if test="isFeatured != null">AND is_featured = #{isFeatured}</if>
+        </where>
+    </select>
+
+    <select id="findById" resultMap="CoursePackageResult">
+        SELECT * FROM course_packages WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO course_packages (id, title, description, cover_url, category, original_price, selling_price, expire_days, course_count, is_active, is_featured, created_at, updated_at)
+        VALUES (#{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}, #{title}, #{description}, #{coverUrl}, #{category}, #{originalPrice}, #{sellingPrice}, #{expireDays}, #{courseCount}, #{isActive}, #{isFeatured}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update">
+        UPDATE course_packages
+        SET title = #{title}, description = #{description}, cover_url = #{coverUrl}, category = #{category},
+            original_price = #{originalPrice}, selling_price = #{sellingPrice}, expire_days = #{expireDays},
+            is_active = #{isActive}, is_featured = #{isFeatured}, updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM course_packages WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </delete>
+
+    <update id="updateCourseCount">
+        UPDATE course_packages SET course_count = #{count}, updated_at = NOW()
+        WHERE id = #{id, typeHandler=com.flittly.bankendspringboot.config.UUIDTypeHandler}
+    </update>
+
+</mapper>
