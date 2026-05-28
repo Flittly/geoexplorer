@@ -6,7 +6,7 @@
         <id property="id" column="id" typeHandler="com.flittly.bankendspringboot.config.UUIDTypeHandler"/>
         <result property="target" column="target"/>
         <result property="code" column="code"/>
-        <result property="type" column="type" typeHandler="com.flittly.bankendspringboot.config.LandformTypeHandler"/>
+        <result property="type" column="type"/>
         <result property="expiresAt" column="expires_at"/>
         <result property="isUsed" column="is_used"/>
         <result property="createdAt" column="created_at"/>

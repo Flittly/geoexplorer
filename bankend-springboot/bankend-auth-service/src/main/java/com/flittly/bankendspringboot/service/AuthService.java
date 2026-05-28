@@ -12,6 +12,7 @@ import com.flittly.bankendspringboot.mapper.RefreshTokenMapper;
 import com.flittly.bankendspringboot.mapper.UserMapper;
 import com.flittly.bankendspringboot.mapper.VerificationCodeMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,8 @@ public class AuthService {
     private final VerificationCodeMapper verificationCodeMapper;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+    private final Random random = new Random();
 
     public MessageResponse sendVerificationCode(SendCodeRequest request) {
         String target = request.getTarget();
@@ -37,7 +43,7 @@ public class AuthService {
 
         verificationCodeMapper.markAsUsed(target, type);
 
-        String code = "123456";
+        String code = String.format("%06d", random.nextInt(1000000));
 
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setId(UUID.randomUUID());
@@ -50,16 +56,19 @@ public class AuthService {
 
         verificationCodeMapper.insert(verificationCode);
 
-        System.out.println("Verification code for " + target + ": " + code);
+        log.info("验证码已生成: {} -> {}", target, code);
 
         return MessageResponse.success("验证码发送成功");
     }
 
     @Transactional
     public TokenResponse register(RegisterRequest request) {
-        if (!"123456".equals(request.getCode())) {
+        String target = request.getEmail() != null ? request.getEmail() : request.getPhone();
+        var codes = verificationCodeMapper.findActiveByTargetAndType(target, "register", LocalDateTime.now());
+        if (codes.isEmpty() || !codes.get(0).getCode().equals(request.getCode())) {
             throw new BusinessException(ErrorCode.INVALID_VERIFICATION_CODE);
         }
+        verificationCodeMapper.markAsUsed(target, "register");
 
         User existingUser = userMapper.findByEmailOrPhone(request.getEmail(), request.getPhone());
         if (existingUser != null) {
@@ -99,9 +108,12 @@ public class AuthService {
     }
 
     public TokenResponse loginWithCode(LoginCodeRequest request) {
-        if (!"123456".equals(request.getCode())) {
+        String target = request.getEmail() != null ? request.getEmail() : request.getPhone();
+        var codes = verificationCodeMapper.findActiveByTargetAndType(target, "login", LocalDateTime.now());
+        if (codes.isEmpty() || !codes.get(0).getCode().equals(request.getCode())) {
             throw new BusinessException(ErrorCode.INVALID_VERIFICATION_CODE);
         }
+        verificationCodeMapper.markAsUsed(target, "login");
 
         User user = userMapper.findByEmailOrPhone(request.getEmail(), request.getPhone());
         if (user == null) {
