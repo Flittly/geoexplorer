@@ -15,6 +15,7 @@ public class AgentConfig {
         return OpenAIChatModel.builder()
                 .apiKey(openAiConfig.getApiKey())
                 .modelName(openAiConfig.getModel())
+                .baseUrl(openAiConfig.getBaseUrl())
                 .build();
     }
 }
