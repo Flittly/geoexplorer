@@ -1,0 +1,29 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: bankend-ai-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/geoexplorer?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.flittly.ai.model
+  configuration:
+    map-underscore-to-camel-case: true
+
+# AgentScope 配置
+agentscope:
+  openai:
+    api-key: ${OPENAI_API_KEY}
+    model: gpt-4
+    base-url: https://api.openai.com/v1
+
+logging:
+  level:
+    com.flittly.ai: DEBUG
+    io.agentscope: DEBUG
