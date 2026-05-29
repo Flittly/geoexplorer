@@ -16,7 +16,6 @@ public class LearningRecord {
     private Long studentId;
     private Long courseId;
     private Long knowledgePointId;
-    private String knowledgePointName;
     private Boolean isCorrect;
     private BigDecimal score;
     private LocalDateTime attemptAt;
