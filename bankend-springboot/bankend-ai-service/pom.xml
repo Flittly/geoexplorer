@@ -7,9 +7,11 @@
         <groupId>com.flittly</groupId>
         <artifactId>bankend-springboot</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>bankend-ai-service</artifactId>
+    <packaging>jar</packaging>
     <name>bankend-ai-service</name>
     <description>AI Service with AgentScope Multi-Agent</description>
 
