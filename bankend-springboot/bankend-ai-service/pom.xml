@@ -11,9 +11,9 @@
     </parent>
 
     <artifactId>bankend-ai-service</artifactId>
-    <packaging>jar</packaging>
     <name>bankend-ai-service</name>
     <description>AI Service with AgentScope Multi-Agent</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>21</java.version>
