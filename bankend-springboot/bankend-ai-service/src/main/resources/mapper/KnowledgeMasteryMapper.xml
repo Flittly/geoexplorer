@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.ai.mapper.KnowledgeMasteryMapper">
+
+    <resultMap id="KnowledgeMasteryMap" type="com.flittly.ai.model.KnowledgeMastery">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="knowledgePointId" column="knowledge_point_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="masteryScore" column="mastery_score"/>
+        <result property="attemptCount" column="attempt_count"/>
+        <result property="correctCount" column="correct_count"/>
+        <result property="lastAttemptAt" column="last_attempt_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectByStudentIdAndCourseId" resultMap="KnowledgeMasteryMap">
+        SELECT * FROM knowledge_mastery
+        WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </select>
+
+    <select id="selectByStudentAndKnowledgePoint" resultMap="KnowledgeMasteryMap">
+        SELECT * FROM knowledge_mastery
+        WHERE student_id = #{studentId} AND knowledge_point_id = #{knowledgePointId}
+    </select>
+
+    <insert id="insertOrUpdate" parameterType="com.flittly.ai.model.KnowledgeMastery">
+        INSERT INTO knowledge_mastery (student_id, knowledge_point_id, course_id, mastery_score, attempt_count, correct_count, last_attempt_at)
+        VALUES (#{studentId}, #{knowledgePointId}, #{courseId}, #{masteryScore}, #{attemptCount}, #{correctCount}, #{lastAttemptAt})
+        ON DUPLICATE KEY UPDATE
+            mastery_score = #{masteryScore},
+            attempt_count = #{attemptCount},
+            correct_count = #{correctCount},
+            last_attempt_at = #{lastAttemptAt},
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+</mapper>

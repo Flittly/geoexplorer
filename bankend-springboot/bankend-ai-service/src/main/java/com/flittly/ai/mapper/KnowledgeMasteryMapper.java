@@ -8,4 +8,8 @@ import java.util.List;
 @Mapper
 public interface KnowledgeMasteryMapper {
     List<KnowledgeMastery> selectByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+
+    KnowledgeMastery selectByStudentAndKnowledgePoint(@Param("studentId") Long studentId, @Param("knowledgePointId") Long knowledgePointId);
+
+    int insertOrUpdate(KnowledgeMastery mastery);
 }

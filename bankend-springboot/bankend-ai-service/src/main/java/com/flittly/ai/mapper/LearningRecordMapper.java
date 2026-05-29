@@ -10,4 +10,6 @@ public interface LearningRecordMapper {
     List<LearningRecord> selectByStudentId(@Param("studentId") Long studentId, @Param("days") Integer days);
 
     List<LearningRecord> selectByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+
+    int insert(LearningRecord record);
 }

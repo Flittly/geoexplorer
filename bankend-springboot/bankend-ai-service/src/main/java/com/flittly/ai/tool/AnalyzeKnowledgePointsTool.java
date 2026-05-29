@@ -45,7 +45,7 @@ public class AnalyzeKnowledgePointsTool {
         BigDecimal overallMastery = masteryList.stream()
                 .map(KnowledgeMastery::getMasteryScore)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(new BigDecimal(masteryList.size()), 2, BigDecimal.ROUND_HALF_UP);
+                .divide(new BigDecimal(Math.max(masteryList.size(), 1)), 2, BigDecimal.ROUND_HALF_UP);
 
         String trend = determineTrend(masteryList);
 

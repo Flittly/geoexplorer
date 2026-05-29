@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flittly.ai.mapper.LearningRecordMapper">
+
+    <resultMap id="LearningRecordMap" type="com.flittly.ai.model.LearningRecord">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="knowledgePointId" column="knowledge_point_id"/>
+        <result property="isCorrect" column="is_correct"/>
+        <result property="score" column="score"/>
+        <result property="attemptAt" column="attempt_at"/>
+    </resultMap>
+
+    <select id="selectByStudentId" resultMap="LearningRecordMap">
+        SELECT * FROM learning_record
+        WHERE student_id = #{studentId}
+        <if test="days != null">
+            AND attempt_at >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+        </if>
+        ORDER BY attempt_at DESC
+    </select>
+
+    <select id="selectByStudentIdAndCourseId" resultMap="LearningRecordMap">
+        SELECT * FROM learning_record
+        WHERE student_id = #{studentId} AND course_id = #{courseId}
+        ORDER BY attempt_at DESC
+    </select>
+
+    <insert id="insert" parameterType="com.flittly.ai.model.LearningRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO learning_record (student_id, course_id, knowledge_point_id, is_correct, score, attempt_at)
+        VALUES (#{studentId}, #{courseId}, #{knowledgePointId}, #{isCorrect}, #{score}, #{attemptAt})
+    </insert>
+
+</mapper>
